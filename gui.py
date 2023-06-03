@@ -3,9 +3,7 @@ import customtkinter as ctk
 import CTkMessagebox as ctkmb
 import pytube
 from helpers import *
-
-
-APP_VERSION = "v0.1.0"
+from constants import *
 
 
 def download_video(url):
@@ -14,29 +12,29 @@ def download_video(url):
         stream = yt.streams.filter(file_extension='mp4', progressive=True).first()
         download_path = tk.filedialog.askdirectory()
         if not download_path:
-            ctkmb.CTkMessagebox(title="Cancelled", message="Download Cancelled!", icon="warning", option_1="Close")
+            ctkmb.CTkMessagebox(title=CANCELLED, message=DOWNLOAD_CANCELLED, icon="warning", option_1="Close")
             return
         stream.download(download_path)
-        ctkmb.CTkMessagebox(title="Success!", message=f"Successfully downloaded the video in the path\n{download_path}")
+        ctkmb.CTkMessagebox(title=SUCCESS, message=DOWNLOAD_SUCCESS.format(download_path))
     except pytube.exceptions.RegexMatchError:
-        ctkmb.CTkMessagebox(title="Error!", message="Invalid URL!\nPlease enter a valid URL!", icon="cancel")
+        ctkmb.CTkMessagebox(title=ERROR, message=INVALID_VIDEO_ID, icon="cancel")
     except Exception as e:
-        ctkmb.CTkMessagebox(title="Error!", message=e, icon="cancel")
+        ctkmb.CTkMessagebox(title=ERROR, message=e, icon="cancel")
 
 def search_url():
     url = url_entry.get()
     if not url:
-        ctkmb.CTkMessagebox(title="Error!", message="Please enter the Youtube video link", icon="cancel")
+        ctkmb.CTkMessagebox(title=ERROR, message=EMPTY_URL_INPUT, icon="cancel")
         return
     if not is_valid_youtube_url(url):
-        ctkmb.CTkMessagebox(title="Error!", message="Invalid URL\nPlease enter a valid link!", icon="cancel")
+        ctkmb.CTkMessagebox(title=ERROR, message=INVALID_URL, icon="cancel")
         return
     download_video(url)
 
 class App(ctk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.title(f"YouTube Video Downloader {APP_VERSION}")
+        self.title(f"YouTube Video Downloader GUI {APP_VERSION}")
         self.geometry("500x200")
 
 if __name__ == "__main__":
