@@ -10,6 +10,9 @@ references.txt
 # notes
 notes.txt
 
+# video files
+.mp4
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

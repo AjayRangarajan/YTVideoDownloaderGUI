@@ -2,20 +2,28 @@ import tkinter as tk
 import customtkinter as ctk
 import CTkMessagebox as ctkmb
 import pytube
-from helpers import *
-from constants import *
+import timeit
+from utils.helpers import *
+from utils.constants import *
 
 
 def download_video(url):
     try:
+        start_time = timeit.default_timer()
         yt = pytube.YouTube(url)
         stream = yt.streams.filter(file_extension='mp4', progressive=True).first()
+        end_time = timeit.default_timer()
+        search_seconds = end_time - start_time
         download_path = tk.filedialog.askdirectory()
         if not download_path:
             ctkmb.CTkMessagebox(title=CANCELLED, message=DOWNLOAD_CANCELLED, icon="warning", option_1="Close")
             return
+        start_time = timeit.default_timer()
         stream.download(download_path)
-        ctkmb.CTkMessagebox(title=SUCCESS, message=DOWNLOAD_SUCCESS.format(download_path))
+        end_time = timeit.default_timer()
+        download_seconds = end_time - start_time
+        download_time = convert_download_time(search_seconds + download_seconds)
+        ctkmb.CTkMessagebox(title=SUCCESS, message=DOWNLOAD_SUCCESS.format(download_path, download_time))
     except pytube.exceptions.RegexMatchError:
         ctkmb.CTkMessagebox(title=ERROR, message=INVALID_VIDEO_ID, icon="cancel")
     except Exception as e:
@@ -35,7 +43,7 @@ class App(ctk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title(f"YouTube Video Downloader GUI {APP_VERSION}")
-        self.geometry("500x200")
+        self.geometry(APP_GEOMETRY)
 
 if __name__ == "__main__":
 
