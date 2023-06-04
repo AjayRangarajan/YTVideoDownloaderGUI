@@ -43,7 +43,8 @@ class App(ctk.CTk):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.title(f"YouTube Video Downloader GUI {APP_VERSION}")
-        self.geometry(APP_GEOMETRY)
+        x, y = calculate_center(self, APP_WIDTH, APP_HEIGHT)
+        self.geometry(APP_GEOMETRY.format(APP_WIDTH, APP_HEIGHT, x, y))
 
 if __name__ == "__main__":
 

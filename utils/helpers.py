@@ -4,6 +4,15 @@ def is_valid_youtube_url(url):
     pattern = r"^(https?://)?(www\.)?(youtube\.com|youtu\.?be)/.+$"
     return re.match(pattern, url) is not None
 
+def calculate_center(app, app_width, app_height):
+    screen_width = int(app.winfo_screenwidth())
+    screen_height = int(app.winfo_screenheight())
+
+    x = (screen_width / 2) - (app_width / 2)
+    y = (screen_height / 2) - (app_height / 2)
+    
+    return int(x), int(y)
+
 def convert_download_time(seconds):
     seconds = round(seconds)
     if seconds >= 60:

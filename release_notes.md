@@ -5,7 +5,7 @@
 ##### features added:
 
 * [X] Show download time with success message
-* [ ] Center the app window
+* [X] Center the app window
 
 ##### Screenshots
 

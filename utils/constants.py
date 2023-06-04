@@ -1,7 +1,7 @@
 APP_VERSION = "v0.2.1"
-APP_WIDTH = "500"
-APP_HEIGHT = "200"
-APP_GEOMETRY = f"{APP_WIDTH}x{APP_HEIGHT}"
+APP_WIDTH = 500
+APP_HEIGHT = 300
+APP_GEOMETRY = "{}x{}+{}+{}"
 CANCELLED = "Cancelled!"
 DOWNLOAD_CANCELLED = "Download Cancelled!"
 SUCCESS = "Success!"
