@@ -4,14 +4,35 @@
 
 ##### features added:
 
-* [X] Show download time with success message
-* [X] Center the app window
+* Added download time to the success message
+* Centered the app window
+* Changed the icon
 
 ##### Screenshots
 
-###### Download success message with download time:
+###### App v0.2.1
 
-![download_success_message_with_download_time](images/screenshots/v0.2.1/download_success_message_with_download_time.png)
+![App v0.2.1](images/screenshots/v0.2.1/App_v0.2.1.png)
+
+###### Download success message:
+
+![Download success v0.2.1](images/screenshots/v0.2.1/download_success_v0.2.1.png)
+
+###### Download cancelled message:
+
+![Download cancelled v0.2.1](images/screenshots/v0.2.1/download_cancelled_v0.2.1.png)
+
+###### Invalid URL error message:
+
+![Invalid URL error v0.2.1](images/screenshots/v0.2.1/invalid_url_error_v0.2.1.png)
+
+###### Invalid video id error message:
+
+![Invalid URL error v0.2.1](images/screenshots/v0.2.1/invalid_video_id_error_v0.2.1.png)
+
+###### Empty URL error message:
+
+![Empty URL error v0.2.1](images/screenshots/v0.2.1/empty_url_error_v0.2.1.png)
 
 ---
 

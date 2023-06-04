@@ -5,7 +5,11 @@ import pytube
 import timeit
 from utils.helpers import *
 from utils.constants import *
+from pathlib import Path
+from sys import platform
 
+
+SCRIPT_PATH = Path(__file__).resolve().parent
 
 def download_video(url):
     try:
@@ -45,6 +49,12 @@ class App(ctk.CTk):
         self.title(f"YouTube Video Downloader GUI {APP_VERSION}")
         x, y = calculate_center(self, APP_WIDTH, APP_HEIGHT)
         self.geometry(APP_GEOMETRY.format(APP_WIDTH, APP_HEIGHT, x, y))
+        if platform.startswith("win"):
+            self.icon_path = SCRIPT_PATH.joinpath("images/icons/ico/icon1.ico")
+            self.wm_iconbitmap(bitmap = self.icon_path)
+        else:
+            self.icon_path = SCRIPT_PATH.joinpath("images/icons/xbm/icon1.xbm")
+            self.wm_iconbitmap(bitmap = self.icon_path)
 
 if __name__ == "__main__":
 
