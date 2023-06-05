@@ -1,5 +1,19 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.2.2**
+
+##### changes:
+
+* changed the app layout
+
+##### Screenshots
+
+###### App v0.2.2
+
+![App v0.2.2](images/screenshots/v0.2.2/App_v0.2.2.png)
+
+---
+
 #### **version 0.2.1**
 
 ##### features added:

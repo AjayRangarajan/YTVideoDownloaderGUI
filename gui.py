@@ -64,14 +64,16 @@ if __name__ == "__main__":
     app = App()
 
     url_entry_label = ctk.CTkLabel(app, text="Enter the Youtube video link below:")
-    url_entry_label.grid(row=0, column=0, padx=0, pady=(10, 0))
+    url_entry_label.grid(row=0, column=0, sticky='s')
 
     url_entry = ctk.CTkEntry(app, width=400)
-    url_entry.grid(row=1, column=0)
+    url_entry.grid(row=1, column=0, padx=5)
 
-    search_button = ctk.CTkButton(app, text="Download", command=search_url)
-    search_button.grid(row=2, column=0, pady=(20, 5))
+    search_button = ctk.CTkButton(app, text="Download", command=search_url, anchor='n')
+    search_button.grid(row=2, column=0, pady=(5, 0), sticky='n')
 
     app.grid_columnconfigure(0, weight=1)
+    app.grid_rowconfigure(0, weight=1)
+    app.grid_rowconfigure(2, weight=5)
 
     app.mainloop()
