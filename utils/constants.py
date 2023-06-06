@@ -1,4 +1,4 @@
-APP_VERSION = "v0.2.2"
+APP_VERSION = "v0.3.2"
 APP_WIDTH = 500
 APP_HEIGHT = 250
 APP_GEOMETRY = "{}x{}+{}+{}"

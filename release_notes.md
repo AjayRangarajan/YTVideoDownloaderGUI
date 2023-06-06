@@ -1,5 +1,19 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.3.2**
+
+##### features:
+
+* Added progressbar
+
+##### Screenshots
+
+###### progressbar:
+
+![App v0.3.2](images/screenshots/v0.3.2/progressbar_v0.3.2.png)
+
+---
+
 #### **version 0.2.2**
 
 ##### changes:

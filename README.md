@@ -1,6 +1,6 @@
 # **YTVideoDownloaderGUI**
 
-###### version 0.2.2
+###### version 0.3.2
 
 A simple GUI for downloading Youtube videos using Python.
 
@@ -31,6 +31,10 @@ After running the above command, the `.exe` file will be available in the `dist/
 ###### Download success message:
 
 ![Download success v0.2.1](images/screenshots/v0.2.1/download_success_v0.2.1.png)
+
+###### progressbar:
+
+![Progressbar v0.3.2](images/screenshots/v0.3.2/progressbar_v0.3.2.png)
 
 ###### Download cancelled message:
 
