@@ -1,5 +1,18 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.3.3**
+
+##### changes:
+
+*  Added type hinting
+*  Code refactoring
+
+##### features:
+
+*  Download the highest resolution
+
+---
+
 #### **version 0.3.2**
 
 ##### features:

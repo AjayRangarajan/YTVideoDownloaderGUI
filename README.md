@@ -1,12 +1,14 @@
 # **YTVideoDownloaderGUI**
 
-###### version 0.3.2
+![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)  ![Latest Tag](https://img.shields.io/github/v/tag/AjayRangarajan/YTVideoDownloaderGUI)  ![Total Commits](https://img.shields.io/github/commit-activity/t/AjayRangarajan/YTVideoDownloaderGUI)  ![Last commit](https://img.shields.io/github/last-commit/AjayRangarajan/YTVideoDownloaderGUI)  ![Repo size](https://img.shields.io/github/repo-size/AjayRangarajan/YTVideoDownloaderGUI)
+
+###### version 0.3.3
 
 A simple GUI for downloading Youtube videos using Python.
 
 ### Release notes:
 
-Refer [release_notes.md](release_notes.md) for release notes.
+Refer [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ### Dependencies:
 

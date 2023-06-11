@@ -1,10 +1,13 @@
 import re
+from typing import Tuple, Union
+import tkinter as tk
 
-def is_valid_youtube_url(url):
+
+def is_valid_youtube_url(url: str) -> str:
     pattern = r"^(https?://)?(www\.)?(youtube\.com|youtu\.?be)/.+$"
     return re.match(pattern, url) is not None
 
-def calculate_center(app, app_width, app_height):
+def calculate_center(app: tk.Tk, app_width: int, app_height: int) -> Tuple[int, int]:
     screen_width = int(app.winfo_screenwidth())
     screen_height = int(app.winfo_screenheight())
 
@@ -13,7 +16,7 @@ def calculate_center(app, app_width, app_height):
     
     return int(x), int(y)
 
-def convert_download_time(seconds):
+def convert_download_time(seconds: Union[float, int]) -> str:
     seconds = round(seconds)
     if seconds >= 60:
         minutes = seconds // 60
@@ -27,24 +30,3 @@ def convert_download_time(seconds):
         remainder_seconds = remainder % 60
         download_time = f"{hours}:{remainder_minutes}:{remainder_seconds} hours"
     return f"{seconds} seconds"
-
-def get_resolutions_with_formatted_size(streams):
-    resolutions = []
-    for stream in streams:
-        size_in_bytes = stream.filesize
-        if size_in_bytes < 1024 * 1024:
-            size_str = f"{size_in_bytes / 1024:.2f} KB"
-        elif size_in_bytes < 1024 * 1024 * 1024:
-            size_str = f"{size_in_bytes / (1024 * 1024):.2f} MB"
-        else:
-            size_str = f"{size_in_bytes / (1024 * 1024 * 1024):.2f} GB"
-        resolutions.append((stream.resolution, size_str))
-    return resolutions
-
-def get_mime_types(streams):
-    extensions = set()
-    for stream in streams:
-        mime_type = stream.mime_type
-        ext = mime_type.split("/")[-1]
-        extensions.add(ext)
-    return extensions

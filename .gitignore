@@ -10,8 +10,12 @@ references.txt
 # notes
 notes.txt
 
-# video files
+# media files
 .mp4
+.mp3
+
+# editor
+.vscode
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
