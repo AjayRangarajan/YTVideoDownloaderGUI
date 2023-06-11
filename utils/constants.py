@@ -1,6 +1,6 @@
 APPEARANCE_MODE = "System"
 COLOR_THEME = "blue"
-APP_VERSION = "v0.3.3"
+APP_VERSION = "v0.4.3"
 APP_WIDTH = 500
 APP_HEIGHT = 250
 APP_GEOMETRY = "{}x{}+{}+{}"
@@ -12,3 +12,5 @@ ERROR = "Error!"
 INVALID_URL = "Invalid URL!\nPlease enter a valid Link!"
 INVALID_VIDEO_ID = "The given video id is invalid."
 EMPTY_URL_INPUT = "Please enter a Youtube video link to download"
+FILE_EXISTS_TITLE = "File already exists"
+FILE_EXISTS_MESSAGE = "A file with the same title already exists.\nDo you want to continue download? (existing file will be deleted)"

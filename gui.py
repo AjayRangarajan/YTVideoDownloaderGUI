@@ -23,6 +23,45 @@ def update_progress(stream: pytube.Stream, chunk: bytes, bytes_remaining: int) -
     progress_label.configure(text=f"{int(download_percentage)} %")
     progress_label.update()
 
+def get_download_location(file_name: str) -> str:
+    download_path = tk.filedialog.askdirectory()
+    if not download_path:
+        ctkmb.CTkMessagebox(
+            title=CANCELLED,
+            message=DOWNLOAD_CANCELLED,
+            icon="warning",
+            option_1="Close",
+        )
+        return
+        
+    file_path = Path(download_path).joinpath(file_name)
+    if file_path.exists():
+        file_exists = ctkmb.CTkMessagebox(
+                title=FILE_EXISTS_TITLE, 
+                message=FILE_EXISTS_MESSAGE,
+                icon="warning", 
+                option_1="Cancel", 
+                option_2="Choose another folder", 
+                option_3="Yes"
+            )
+        res = file_exists.get()
+        if res == "Yes":
+            try:
+                file_path.unlink()
+                return download_path
+            except Exception as exception:
+                ctkmb.CTkMessagebox(title=ERROR, message=exception, icon="cancel")
+                return
+            
+        elif res == "Choose another folder":
+            download_path = get_download_location(file_name)
+            return download_path
+        
+        else:
+            return
+    else:
+        return download_path
+
 
 def download_video(url: str) -> None:
     try:
@@ -34,18 +73,12 @@ def download_video(url: str) -> None:
         end_time = timeit.default_timer()
         search_seconds = end_time - start_time
 
-        download_path = tk.filedialog.askdirectory()
-        if not download_path:
-            ctkmb.CTkMessagebox(
-                title=CANCELLED,
-                message=DOWNLOAD_CANCELLED,
-                icon="warning",
-                option_1="Close",
-            )
-            return
-
-        # update video title
+        #update video title
         video_title = stream.title
+        file_name = f"{video_title}.mp4"
+        download_path = get_download_location(file_name)
+        if not download_path:
+            return
         video_title_label.configure(text=video_title)
         video_title_label.grid(row=3, column=0)
         video_title_label.update()
@@ -58,7 +91,7 @@ def download_video(url: str) -> None:
 
         progressbar.set(0)
         start_time = timeit.default_timer()
-        stream.download(download_path)
+        stream.download(output_path=download_path, filename=file_name)
         end_time = timeit.default_timer()
         progressbar.set(1)
 
@@ -123,6 +156,9 @@ if __name__ == "__main__":
 
     url_entry = ctk.CTkEntry(app, width=400)
     url_entry.grid(row=1, column=0, padx=5)
+
+    # app.focus()
+    # url_entry.focus()
 
     search_button = ctk.CTkButton(app, text="Download", command=search_url)
     search_button.grid(row=2, column=0, pady=(5, 0), sticky="n")

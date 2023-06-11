@@ -1,5 +1,20 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.4.3**
+
+##### features:
+
+* Added function to check if the file is already present in the given download folder path if it is then, prompt the user to continue/cancel or change the download path.
+
+##### Screenshots
+
+###### File exists prompt:
+
+![File exists prompt v0.4.3](images/screenshots/v0.4.3/file_exists_prompt_v0.4.3.png)
+
+
+---
+
 #### **version 0.3.3**
 
 ##### changes:
