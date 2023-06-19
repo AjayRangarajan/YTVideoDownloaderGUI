@@ -2,15 +2,16 @@
 
 ![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)  ![Latest Tag](https://img.shields.io/github/v/tag/AjayRangarajan/YTVideoDownloaderGUI)  ![Total Commits](https://img.shields.io/github/commit-activity/t/AjayRangarajan/YTVideoDownloaderGUI)  ![Last commit](https://img.shields.io/github/last-commit/AjayRangarajan/YTVideoDownloaderGUI)  ![Repo size](https://img.shields.io/github/repo-size/AjayRangarajan/YTVideoDownloaderGUI)
 
-###### version 0.4.3
+###### version 0.5.4
 
-A simple GUI for downloading Youtube videos using Python.
+A GUI for downloading Youtube videos using Python.
 
 ## Features:
 
 * Downloads single YouTube video with highest resolution.
 * Allows user to choose the download location & verifies it.
 * Shows progress of the download.
+* Choose download type (video, audio, video only) with respective file types and quality (resolution/average bitrate)
 
 ### Release notes:
 
@@ -21,6 +22,7 @@ Refer [CHANGELOG.md](CHANGELOG.md) for release notes.
 * `CTkMessagebox==2.0`
 * `customtkinter==5.1.3`
 * `pytube==15.0.0`
+* `Pillow==9.5.0`
 
 Refer [requirements.txt](requirements.txt) for complete list of dependencies.
 
@@ -34,32 +36,35 @@ After running the above command, the `.exe` file will be available in the `dist/
 
 ###### Main window:
 
-![Main window v0.2.2](images/screenshots/v0.2.2/App_v0.2.2.png)
+![Main window](images/screenshots/v0.5.4/main_window_v0.5.4.png)
 
+###### Download options:
+
+![Download options](images/screenshots/v0.5.4/download_options_v0.5.4.png)
+
+###### Downloading video:
+
+![Downloading video](images/screenshots/v0.5.4/downloading_video_v0.5.4.png)
 ###### Download success message:
 
-![Download success v0.2.1](images/screenshots/v0.2.1/download_success_v0.2.1.png)
-
-###### progressbar:
-
-![Progressbar v0.3.2](images/screenshots/v0.3.2/progressbar_v0.3.2.png)
+![Download success](images/screenshots/v0.2.1/download_success_v0.2.1.png)
 
 ###### File exists prompt:
 
-![File exists prompt v0.4.3](images/screenshots/v0.4.3/file_exists_prompt_v0.4.3.png)
+![File exists prompt](images/screenshots/v0.4.3/file_exists_prompt_v0.4.3.png)
 
 ###### Download cancelled message:
 
-![Download cancelled v0.2.1](images/screenshots/v0.2.1/download_cancelled_v0.2.1.png)
+![Download cancelled](images/screenshots/v0.2.1/download_cancelled_v0.2.1.png)
 
 ###### Invalid URL error message:
 
-![Invalid URL error v0.2.1](images/screenshots/v0.2.1/invalid_url_error_v0.2.1.png)
+![Invalid URL error](images/screenshots/v0.2.1/invalid_url_error_v0.2.1.png)
 
 ###### Invalid video id error message:
 
-![Invalid URL error v0.2.1](images/screenshots/v0.2.1/invalid_video_id_error_v0.2.1.png)
+![Invalid URL error](images/screenshots/v0.2.1/invalid_video_id_error_v0.2.1.png)
 
 ###### Empty URL error message:
 
-![Empty URL error v0.2.1](images/screenshots/v0.2.1/empty_url_error_v0.2.1.png)
+![Empty URL error](images/screenshots/v0.2.1/empty_url_error_v0.2.1.png)

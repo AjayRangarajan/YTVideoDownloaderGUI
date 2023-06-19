@@ -1,5 +1,39 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.5.4**
+
+##### changes:
+
+* Refactor the entire code into object oriented.
+
+##### features:
+
+* Added feature to choose the download type (video, audio, video only) with respective file types and quality (resolution/average bitrate)
+* Along with the downloaded percentage, (downlaoded size / total file size) will be shown.
+* Display thumbnail image.
+* Video details like, video title, channel name, video duration, published date will be shown with the download options.
+* File size will be displayed once the download options are selected.
+
+##### Screenshots
+
+###### Main window:
+
+![Main window](images/screenshots/v0.5.4/main_window_v0.5.4.png)
+
+###### Download options:
+
+![Download options](images/screenshots/v0.5.4/download_options_v0.5.4.png)
+
+###### Downloading video:
+
+![Downloading video](images/screenshots/v0.5.4/downloading_video_v0.5.4.png)
+
+###### File exists prompt:
+
+![](images/screenshots/v0.4.3/file_exists_prompt_v0.4.3.png)
+
+---
+
 #### **version 0.4.3**
 
 ##### features:
@@ -12,19 +46,18 @@
 
 ![File exists prompt v0.4.3](images/screenshots/v0.4.3/file_exists_prompt_v0.4.3.png)
 
-
 ---
 
 #### **version 0.3.3**
 
 ##### changes:
 
-*  Added type hinting
-*  Code refactoring
+* Added type hinting
+* Code refactoring
 
 ##### features:
 
-*  Download the highest resolution
+* Download the highest resolution
 
 ---
 
