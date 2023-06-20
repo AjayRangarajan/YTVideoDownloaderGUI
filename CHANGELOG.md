@@ -5,7 +5,17 @@
 ##### changes:
 
 * Add `__init__.py` file inside utils directory and import all the modules in it to make it a package.
+* Renamed variables, added more contants & arranged them properly
+* Changed button hover color
+* Fixed multiple progress bar appearing (when download button clicked multiple times) issue
+* Increased the space between the Download frame and Progress frame.
+* Disabled window resizing
 
+##### Screenshots
+
+###### Downloading video:
+
+![Downloading video](images/screenshots/v0.5.5/downloading_video_v0.5.5.png)
 ---
 
 #### **version 0.5.4**

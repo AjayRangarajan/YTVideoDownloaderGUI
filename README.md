@@ -2,7 +2,7 @@
 
 ![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)  ![Latest Tag](https://img.shields.io/github/v/tag/AjayRangarajan/YTVideoDownloaderGUI)  ![Total Commits](https://img.shields.io/github/commit-activity/t/AjayRangarajan/YTVideoDownloaderGUI)  ![Last commit](https://img.shields.io/github/last-commit/AjayRangarajan/YTVideoDownloaderGUI)  ![Repo size](https://img.shields.io/github/repo-size/AjayRangarajan/YTVideoDownloaderGUI)
 
-###### version 0.5.4
+###### version 0.5.5
 
 A GUI for downloading Youtube videos using Python.
 
@@ -44,7 +44,8 @@ After running the above command, the `.exe` file will be available in the `dist/
 
 ###### Downloading video:
 
-![Downloading video](images/screenshots/v0.5.4/downloading_video_v0.5.4.png)
+![Downloading video](images/screenshots/v0.5.5/downloading_video_v0.5.5.png)
+
 ###### Download success message:
 
 ![Download success](images/screenshots/v0.2.1/download_success_v0.2.1.png)
