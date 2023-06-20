@@ -1,5 +1,13 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.5.5**
+
+##### changes:
+
+* Add `__init__.py` file inside utils directory and import all the modules in it to make it a package.
+
+---
+
 #### **version 0.5.4**
 
 ##### changes:

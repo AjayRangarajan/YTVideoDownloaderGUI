@@ -1,6 +1,6 @@
 APPEARANCE_MODE = "System"
 COLOR_THEME = "blue"
-APP_VERSION = "v0.5.4"
+APP_VERSION = "v0.5.5"
 APP_WIDTH = 800
 APP_HEIGHT = 450
 APP_GEOMETRY = "{}x{}+{}+{}"
