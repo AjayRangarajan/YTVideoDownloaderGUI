@@ -2,14 +2,13 @@
 
 ![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)  ![Latest Tag](https://img.shields.io/github/v/tag/AjayRangarajan/YTVideoDownloaderGUI)  ![Total Commits](https://img.shields.io/github/commit-activity/t/AjayRangarajan/YTVideoDownloaderGUI)  ![Last commit](https://img.shields.io/github/last-commit/AjayRangarajan/YTVideoDownloaderGUI)  ![Repo size](https://img.shields.io/github/repo-size/AjayRangarajan/YTVideoDownloaderGUI)
 
-###### version 0.5.5
 
 A GUI for downloading Youtube videos using Python.
 
 ## Features:
 
-* Downloads single YouTube video with highest resolution.
-* Allows user to choose the download location & verifies it.
+* Downloads YouTube video in any available format with high quality.
+* Allows user to choose the download location.
 * Shows progress of the download.
 * Choose download type (video, audio, video only) with respective file types and quality (resolution/average bitrate)
 

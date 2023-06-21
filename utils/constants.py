@@ -1,4 +1,4 @@
-APP_VERSION = "v0.5.5"
+APP_VERSION = "v0.6.1"
 
 # app
 APP_WIDTH = 800

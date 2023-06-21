@@ -1,5 +1,16 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.6.1**
+
+##### changes:
+
+* filename will be validated before download
+* If there is already a file with the same name in the download path, the filename will be changed.
+  * User won't be prompted to change directory or delete & overwrite the existing file.
+* tag versioning fixed
+
+---
+
 #### **version 0.5.5**
 
 ##### changes:
@@ -14,9 +25,6 @@
 ##### Screenshots
 
 ###### Downloading video:
-
-![Downloading video](images/screenshots/v0.5.5/downloading_video_v0.5.5.png)
----
 
 #### **version 0.5.4**
 

@@ -1,15 +1,38 @@
 import re
 from typing import Tuple, MutableSet
+from pathlib import Path
 import tkinter as tk
-
 
 from pytube import YouTube
 from pytube.query import StreamQuery
 
 
-def is_valid_youtube_url(url: str) -> str:
+def is_valid_youtube_url(url: str) -> bool:
     pattern = r"^(https?://)?(www\.)?(youtube\.com|youtu\.?be)/.+$"
-    return re.match(pattern, url) is not None
+    matches = re.match(pattern, url)
+
+    return bool(matches)
+
+def validate_filename(filename: str) -> str:
+    pattern = r'[<>:"/\\|?*\x00-\x1F]'
+    valid_filename = re.sub(pattern, '', filename)
+
+    return valid_filename
+
+def get_validated_unique_filename(download_path: Path, filename: str) -> bool:
+    filename = validate_filename(filename)
+    filepath = download_path.joinpath(filename)
+    if filepath.exists():
+        base_name, extension = filepath.stem, filepath.suffix
+        counter = 1
+        unique_filename = filename
+
+        while (download_path / unique_filename).exists():
+            unique_filename = f"{base_name}({counter}){extension}"
+            counter += 1
+
+        return unique_filename
+    return filename
 
 def calculate_center(app: tk.Tk, app_width: int, app_height: int) -> Tuple[int, int]:
     screen_width = int(app.winfo_screenwidth())

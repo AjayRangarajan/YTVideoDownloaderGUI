@@ -24,7 +24,6 @@ class App(ctk.CTk):
         self.title(title)
         x, y = calculate_center(self, width, height)
         self.geometry(APP_GEOMETRY.format(width, height, x, y))
-        # self.maxsize(width, height)
         self.resizable(False, False)
         
         if platform.startswith("win"):
@@ -51,6 +50,11 @@ class App(ctk.CTk):
 
         self.url = self.url_entry.get()
 
+        if hasattr(self, "download_frame"):
+            if hasattr(self.download_frame, "progress_frame"):
+                self.download_frame.progress_frame.destroy()
+            self.download_frame.destroy()
+
         if not self.url:
             ctkmb.CTkMessagebox(title=ERROR, message=EMPTY_URL_INPUT, icon=ICON_CANCEL)
             return
@@ -69,11 +73,6 @@ class App(ctk.CTk):
         except Exception as exception:
             ctkmb.CTkMessagebox(title=ERROR, message=exception, icon=ICON_CANCEL)
             return
-
-        if hasattr(self, "download_frame"):
-            if hasattr(self.download_frame, "progress_frame"):
-                self.download_frame.progress_frame.destroy()
-            self.download_frame.destroy()
 
         self.download_frame = DownloadFrame(self, yt=self.yt)
 
@@ -274,46 +273,7 @@ class DownloadFrame(ctk.CTkFrame):
             text=f"{download_percentage} % ({downloaded_size}/{total_size})"
         )
         self.progress_frame.progress_label.update()
-
-    def get_download_location(self, file_name: str) -> str:
-        download_path = tk.filedialog.askdirectory()
-        if not download_path:
-            ctkmb.CTkMessagebox(
-                title=CANCELLED,
-                message=DOWNLOAD_CANCELLED,
-                icon="warning",
-                option_1="Close",
-            )
-            return
             
-        file_path = Path(download_path).joinpath(file_name)
-        if file_path.exists():
-            file_exists = ctkmb.CTkMessagebox(
-                    title=FILE_EXISTS_TITLE, 
-                    message=FILE_EXISTS_MESSAGE,
-                    icon="warning", 
-                    option_1="Cancel", 
-                    option_2="Choose another folder", 
-                    option_3="Yes"
-                )
-            res = file_exists.get()
-            if res == "Yes":
-                try:
-                    file_path.unlink()
-                    return download_path
-                except Exception as exception:
-                    ctkmb.CTkMessagebox(title=ERROR, message=exception, icon="cancel")
-                    return
-                
-            elif res == "Choose another folder":
-                download_path = self.get_download_location(file_name)
-                return download_path
-            
-            else:
-                return
-        else:
-            return download_path
-
     def download(self) -> None:
         try:
 
@@ -321,11 +281,20 @@ class DownloadFrame(ctk.CTkFrame):
                 self.progress_frame.destroy()
 
             mime_type = self.video_details_frame.mime_type.get()
-            file_name = f'{self.yt.title}.{mime_type.split("/")[-1]}'
+            filename = f'{self.yt.title}.{mime_type.split("/")[-1]}'
 
-            download_path = self.get_download_location(file_name)
+            download_path = tk.filedialog.askdirectory()
             if not download_path:
+                ctkmb.CTkMessagebox(
+                    title=CANCELLED,
+                    message=DOWNLOAD_CANCELLED,
+                    icon="warning",
+                    option_1="Close",
+                )
                 return
+            download_path = Path(download_path)
+            filename = get_validated_unique_filename(download_path, filename)
+                
 
             self.progress_frame = ProgressFrame(app, fg_color="transparent")
             self.progress_frame.video_title_label.configure(text=self.title)
@@ -334,7 +303,7 @@ class DownloadFrame(ctk.CTkFrame):
             # download the filtered stream
             self.progress_frame.progressbar.set(0)
             start_time = timeit.default_timer()
-            self.video_details_frame.filtered_stream.download(output_path=download_path, filename=file_name)
+            self.video_details_frame.filtered_stream.download(output_path=download_path, filename=filename)
             end_time = timeit.default_timer()
             self.progress_frame.progressbar.set(1)
 
