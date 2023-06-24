@@ -2,8 +2,9 @@
 
 ![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)  ![Latest Tag](https://img.shields.io/github/v/tag/AjayRangarajan/YTVideoDownloaderGUI)  ![Total Commits](https://img.shields.io/github/commit-activity/t/AjayRangarajan/YTVideoDownloaderGUI)  ![Last commit](https://img.shields.io/github/last-commit/AjayRangarajan/YTVideoDownloaderGUI)  ![Repo size](https://img.shields.io/github/repo-size/AjayRangarajan/YTVideoDownloaderGUI)
 
-
 A GUI for downloading Youtube videos using Python.
+
+> ⚠️ **NOTE:** pytube version `15.0.0` is not working. Use the latest pytube version.
 
 ## Features:
 
@@ -11,6 +12,7 @@ A GUI for downloading Youtube videos using Python.
 * Allows user to choose the download location.
 * Shows progress of the download.
 * Choose download type (video, audio, video only) with respective file types and quality (resolution/average bitrate)
+* Added logging feature.
 
 ### Release notes:
 
@@ -20,7 +22,7 @@ Refer [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 * `CTkMessagebox==2.0`
 * `customtkinter==5.1.3`
-* `pytube==15.0.0`
+* `pytube==latest`
 * `Pillow==9.5.0`
 
 Refer [requirements.txt](requirements.txt) for complete list of dependencies.

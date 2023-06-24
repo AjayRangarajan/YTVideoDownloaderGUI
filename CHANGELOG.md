@@ -1,5 +1,18 @@
 # **YTVideoDownloaderGUI**
 
+#### **version 0.6.2**
+
+> ⚠️ **NOTE:** pytube version `15.0.0` is not working. Use the latest pytube version.
+
+##### changes:
+
+* Added **logging** feature
+  * log messages will be added to a file inside the `logs` folder with date in the filename.
+  * If the log folder size exceeds above 10MB, it will delete all the contents of the log file.
+* Added proper error handling. If any error occurs the funcitons will show the error message and return `None`
+
+---
+
 #### **version 0.6.1**
 
 ##### changes:

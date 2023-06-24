@@ -1,4 +1,4 @@
-APP_VERSION = "v0.6.1"
+APP_VERSION = "v0.6.2"
 
 # app
 APP_WIDTH = 800
@@ -27,10 +27,12 @@ SUCCESS = "Success!"
 DOWNLOAD_SUCCESS = "Successfully downloaded the video!\ndownload path:{}\ndownload time: {}"
 ERROR = "Error!"
 INVALID_URL = "Invalid URL!\nPlease enter a valid Link!"
-INVALID_VIDEO_ID = "The given video id is invalid."
 EMPTY_URL_INPUT = "Please enter a Youtube video link to download"
-FILE_EXISTS_TITLE = "File already exists"
-FILE_EXISTS_MESSAGE = "A file with the same title already exists.\nDo you want to continue download? (existing file will be deleted)"
+STREAMS_NOT_AVAILABLE = "Streams not available for the download type {}. Please try a different download type"
+MIME_TYPES_NOT_AVAILABLE = "Mime types not available for the download type {}. Please try a different download type"
+VIDEO_RESOLUTIONS_NOT_AVAILABLE = "Video resolutions not available for the mime type {}. Please try a different mime type"
+AUDIO_QUALITY_NOT_AVAILABLE = "Audio quality not available for the mime type {}. Please try a different mime type"
+VIDEO_DETAILS_FETCH_SUCCESS = "SUCCESS"
 
 # menus
 DOWNLOAD_TYPES = ["video", "audio", "video only"]
