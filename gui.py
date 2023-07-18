@@ -5,9 +5,9 @@ from pathlib import Path
 from sys import platform
 import urllib.request
 import io
+from typing import Any
 
-import pytube
-from pytube.contrib.channel import Channel
+import yt_dlp
 import customtkinter as ctk
 import CTkMessagebox as ctkmb
 from PIL import Image
@@ -75,15 +75,10 @@ class App(ctk.CTk):
             return
         
         try:
-            logger.debug(f"Creating youtube object for the url: {self.url}")
-            self.yt = pytube.YouTube(
-                self.url, 
-                on_progress_callback=lambda *args, **kwargs: self.download_frame.update_progress(*args, **kwargs)
-                )
-            # Fetching streams in App only to check if streams are available to download
-            logger.debug(f"Checking if streams are available for the URL: {self.url}")
-            self.yt.streams
-            logger.debug(f"Streams are available for the URL: {self.url}")
+            logger.debug(f"Extracting video info of the URL: {self.url}")
+            with yt_dlp.YoutubeDL() as ytdlp:
+                self.video_info = ytdlp.extract_info(self.url, download=False)
+            logger.debug(f"Successfully extracted video info of the URL: {self.url}")
 
         except Exception as exception:
             logger.exception(exception)
@@ -91,7 +86,7 @@ class App(ctk.CTk):
             return
 
         logger.info("Creating download frame")
-        self.download_frame = DownloadFrame(self, yt=self.yt)
+        self.download_frame = DownloadFrame(self, video_info=self.video_info)
 
 
 class ProgressFrame(ctk.CTkFrame):
@@ -122,16 +117,15 @@ class ProgressFrame(ctk.CTkFrame):
 
 class VideoDetailsFrame(ctk.CTkFrame):
 
-    def __init__(self, parent: tk.Tk, yt: pytube.YouTube, *args, **kwargs) -> None:
+    def __init__(self, parent: tk.Tk, video_info: Any, *args, **kwargs) -> None:
         super().__init__(parent, *args, **kwargs)
         
         self.download_frame = parent
-        self.yt = yt
+        self.video_info = video_info
 
         if self.fetch_video_details() == VIDEO_DETAILS_FETCH_SUCCESS:
-        
             self.download_type = ctk.StringVar(self, value="Download Type")
-            self.mime_type = ctk.StringVar(self, value="Mime Type")
+            self.extension = ctk.StringVar(self, value="Extension")
             self.download_quality = ctk.StringVar(self, value="Quality")
 
             logger.info("Creating video_details widgets")
@@ -146,52 +140,51 @@ class VideoDetailsFrame(ctk.CTkFrame):
         self.title_label = ctk.CTkLabel(self, text=self.title, anchor='w')
         self.channel_label = ctk.CTkLabel(self, text=self.channel_name, anchor='w')
         self.duration_label = ctk.CTkLabel(self, text=self.duration)
-        self.published_date_label = ctk.CTkLabel(self, text=self.published_date)
-        self.download_type_menu = ctk.CTkOptionMenu(
+        self.upload_date_label = ctk.CTkLabel(self, text=self.upload_date)
+        self.download_types_menu = ctk.CTkOptionMenu(
             self, 
             variable=self.download_type,
             values=DOWNLOAD_TYPES,
-            command=lambda download_type: self.update_mime_types(download_type)
+            command=lambda download_type: self.update_extensions_menu(download_type)
             )
-        self.mime_type_menu = ctk.CTkOptionMenu(
+        self.extensions_menu = ctk.CTkOptionMenu(
             self, 
-            variable=self.mime_type, 
+            variable=self.extension, 
             values=None,
-            command=lambda mime_type: self.update_download_quality(mime_type)
+            command=lambda extension: self.update_download_qualities_menu(extension)
             )
-        self.download_quality_menu = ctk.CTkOptionMenu(
+        self.download_qualities_menu = ctk.CTkOptionMenu(
             self, 
             variable=self.download_quality, 
             values=None,
-            command=lambda download_quality: self.filter_streams(download_quality)
+            command=lambda download_quality: self.filter_download_quality_type_formats(download_quality)
             )
         
     def place_widgets(self) -> None:
         self.title_label.grid(row=0, column=0, columnspan=3, sticky='nsew', padx=(10, 5))
         self.channel_label.grid(row=1, column=0, sticky='nsew', padx=(10, 5))
         self.duration_label.grid(row=1, column=1, sticky='nsew', padx=5, pady=5)
-        self.published_date_label.grid(row=1, column=2, sticky='nsew', padx=5, pady=5)
-        self.download_type_menu.grid(row=2, column=0, padx=5, pady=5)
-        self.mime_type_menu.grid(row=2, column=1, padx=5, pady=5)
-        self.download_quality_menu.grid(row=2, column=2, padx=5, pady=5)
+        self.upload_date_label.grid(row=1, column=2, sticky='nsew', padx=5, pady=5)
+        self.download_types_menu.grid(row=2, column=0, padx=5, pady=5)
+        self.extensions_menu.grid(row=2, column=1, padx=5, pady=5)
+        self.download_qualities_menu.grid(row=2, column=2, padx=5, pady=5)
 
     def fetch_video_details(self) -> str:
         try:
-            logger.info("Fetching streams from the youtube object")
-            self.streams = self.yt.streams
+            logger.info("Fetching video formats")
+            self.formats = self.video_info['formats']
             logger.info("Fetching title of the video")
-            self.title = self.yt.title
+            self.title = self.video_info['title']
             logger.debug(f"Video title: {self.title}")
             logger.info(f"Fetching channel name")
-            self.channel = Channel(url=self.yt.channel_url)
-            self.channel_name = self.channel.channel_name
+            self.channel_name = self.video_info['channel']
             logger.debug(f"Channel name: {self.channel_name}")
             logger.info(f"Fetching video duration")
-            self.duration = get_formatted_time(self.yt.length)
+            self.duration = get_formatted_time(self.video_info['duration'])
             logger.debug(f"Video duration: {self.duration}")
-            logger.info("Fetching video published date")
-            self.published_date = get_formatted_published_date(self.yt)
-            logger.debug(f"Video published date {self.published_date}")
+            logger.info("Fetching video uploaded date")
+            self.upload_date = get_formatted_upload_date(self.video_info['upload_date'])
+            logger.debug(f"Video uploaded date {self.upload_date}")
 
             logger.info("All video details required for video_details frame are successfully fetched")
 
@@ -206,99 +199,84 @@ class VideoDetailsFrame(ctk.CTkFrame):
             )
             return
 
-    def update_mime_types(self, download_type: str) -> None:
-        logger.debug(f"Download type, {download_type} selected! Updating mime type menu!!")
-        self.mime_type.set("Mime Type")
+    def update_extensions_menu(self, download_type: str) -> None:
+        logger.debug(f"Download type, {download_type} selected! Updating extensions menu!!")
+        self.extension.set("Extension")
         self.download_quality.set("Quality")
         self.download_frame.download_button.configure(state=tk.DISABLED)
         self.download_frame.download_button.update()
 
-        self.download_type_streams = get_streams(download_type, self.streams)
-        if self.download_type_streams is None:
+        logger.debug(f"Fetching extensions and formats of download type: {download_type}")
+        extensions, self.download_type_formats = get_extensions_and_formats(download_type, self.formats)
+        if not extensions:
+            logger.error(f"No extensions and formats available for the download type: {download_type}")
+            logger.debug(f"Extensions: {extensions}")
+            logger.debug(f"Download type formats: {self.download_type_formats}")
             ctkmb.CTkMessagebox(
                 title=ERROR, 
-                message=STREAMS_NOT_AVAILABLE.format(self.download_type), 
+                message=EXTENSIONS_AND_FORMATS_NOT_AVAILABLE.format(self.download_type.get()), 
                 icon=ICON_CANCEL
             )
             return
-        logger.debug(f"Fetching mime types for the download type {download_type}")
-        self.mime_types = get_mime_types(self.download_type_streams)
-        if self.mime_types is None:
-            logger.error(f"Mime types not available for this download type {download_type}")
-            ctkmb.CTkMessagebox(
-                title=ERROR, 
-                message=MIME_TYPES_NOT_AVAILABLE.format(self.download_type), 
-                icon=ICON_CANCEL
-            )
-            return
-        self.mime_type_menu.configure(values=self.mime_types)
-        self.mime_type_menu.update()
-        logger.debug(f'Updated mime types: {self.mime_types} to the menu')
+        logger.debug(f"Available formats for the download type {download_type}:")
+        for fmt in self.download_type_formats:
+            logger.debug(fmt)
 
-    def update_download_quality(self, mime_type: str) -> None:
-        logger.debug(f"Mime type {mime_type} choosed! Updating download quality!!")
+        self.extensions_menu.configure(values=extensions)
+        self.extensions_menu.update()
+        logger.debug(f'Updated extensions: {extensions}')
+
+    def update_download_qualities_menu(self, extension: str) -> None:
+        logger.debug(f"Extension {extension} choosed! Updating download qualities menu!!")
         self.download_quality.set("Quality")
         self.download_frame.download_button.configure(state=tk.DISABLED)
         self.download_frame.download_button.update()
 
-        if 'video' in mime_type:
-            resolutions = get_resolution(mime_type, self.download_type_streams)
-            if resolutions is None:
-                logger.error(f"Video resolutions not available for this mime type {self.mime_type}")
-                ctkmb.CTkMessagebox(
-                    title=ERROR, 
-                    message=VIDEO_RESOLUTIONS_NOT_AVAILABLE.format(self.mime_type), 
-                    icon=ICON_CANCEL
-                )
-                return
-            self.download_quality_menu.configure(values=resolutions)
-            self.download_quality_menu.update()
-            logger.debug(f"Updated video resolutions {resolutions} to the menu")
-        elif 'audio' in mime_type or mime_type == 'mp3':
-            audio_quality = get_abr(mime_type, self.download_type_streams)
-            if audio_quality is None:
-                logger.error(f"Audio quality not available for this mime type {self.mime_type}")
-                ctkmb.CTkMessagebox(
-                    title=ERROR, 
-                    message=AUDIO_QUALITY_NOT_AVAILABLE.format(self.mime_type), 
-                    icon=ICON_CANCEL
-                )
-                return
-            self.download_quality_menu.configure(values=audio_quality)
-            self.download_quality_menu.update()
-            logger.debug(f"Updated audio quality {audio_quality}to the menu")
-        
-    def filter_streams(self, download_quality: str) -> None:
+        logger.debug(f"Fetching available qualities and formats for the extension: {extension}")
+        download_qualities, self.extension_type_formats = get_download_qualities_and_formats(extension, self.download_type_formats)
+        if not download_qualities:
+            logger.error(f"Qualities and formats not available for this extension {self.extension}")
+            ctkmb.CTkMessagebox(
+                title=ERROR, 
+                message=DOWNLOAD_QUALITIES_AND_FORMATS_NOT_AVAILABLE.format(self.extension), 
+                icon=ICON_CANCEL
+            )
+            return
+        self.download_qualities_menu.configure(values=download_qualities)
+        self.download_qualities_menu.update()
+        logger.debug(f"Updated download qualities: {download_qualities}")
+
+    def filter_download_quality_type_formats(self, download_quality: str) -> None:
 
         download_type = self.download_type.get()
-        mime_type = self.mime_type.get()
+        extension = self.extension.get()
         quality = download_quality
-        logger.debug(f"Filtering streams of DOWNLOAD_TYPE: {download_type}; MIME_TYPE: {mime_type}; QUALITY: {quality}")
+        logger.debug(f"Filtering formats of DOWNLOAD_TYPE: {download_type}; EXTENSION: {extension}; QUALITY: {quality}")
 
-        if mime_type == "mp3":
-            mime_type = "audio/mp4"
+        download_quality_type_formats = []
+        for fmt in self.extension_type_formats:
+            if fmt['format_note'] == quality:
+                download_quality_type_formats.append(fmt)
 
-        stream_filter = {
-            'mime_type': mime_type
-        }
-
-        if 'video' in download_type:
-            stream_filter['res'] = quality
-        if download_type == 'video':
-            stream_filter['progressive'] = True
-        if download_type == 'video only':
-            stream_filter['adaptive'] = True
-        elif 'audio' in download_type:
-            stream_filter['abr'] = quality
-        logger.debug(f"Stream filter: {stream_filter}")
-
-        start_time = timeit.default_timer()
-        self.filtered_stream = self.streams.filter(**stream_filter).first()
-        end_time = timeit.default_timer()
-        self.filter_time = end_time - start_time
-        logger.debug(f"Time taken to filter the streams {get_formatted_time(self.filter_time)}")
-
-        self.filesize = get_formatted_size(self.filtered_stream.filesize)
+        if not download_quality_type_formats:
+            logger.error(f"No formats available for this quality {quality}")
+            ctkmb.CTkMessagebox(
+                title=ERROR, 
+                message=FORMATS_NOT_AVAILABLE_FOR_THIS_QUALITY.format(quality), 
+                icon=ICON_CANCEL
+            )
+            return
+        logger.debug(f"Filtered download quality type formats: {download_quality_type_formats}")
+        self.selected_format = download_quality_type_formats[0]
+        logger.debug(f"Selected format: {self.selected_format}")
+        try:
+            self.filesize = get_formatted_size(self.selected_format.get('filesize'))
+        except TypeError:
+            try:
+                self.filesize = get_formatted_size(self.selected_format.get('filesize_approx'))
+            except TypeError:
+                self.filesize = FILESIZE_NOT_AVAILABLE
+    
         self.download_frame.filesize.set(self.filesize)
 
         logger.debug(f"Update filesize to {self.filesize} in the download_frame")
@@ -310,11 +288,11 @@ class VideoDetailsFrame(ctk.CTkFrame):
 
 class DownloadFrame(ctk.CTkFrame):
 
-    def __init__(self, parent: tk.Tk, yt: pytube.YouTube, *args, **kwargs) -> None:
+    def __init__(self, parent: tk.Tk, video_info: Any, *args, **kwargs) -> None:
         super().__init__(parent, *args, **kwargs)
 
         self.app = parent
-        self.yt = yt
+        self.video_info = video_info
 
         if self.fetch_video_details() == VIDEO_DETAILS_FETCH_SUCCESS:
     
@@ -333,7 +311,7 @@ class DownloadFrame(ctk.CTkFrame):
 
     def create_widgets(self) -> None:
         self.thumbnail_image_label = ctk.CTkLabel(self, text=None, image=self.thumbnail_image)
-        self.video_details_frame = VideoDetailsFrame(self, yt=self.yt)
+        self.video_details_frame = VideoDetailsFrame(self, video_info=self.video_info)
         self.filesize_label = ctk.CTkLabel(self, textvariable=self.filesize, text=None)
         self.download_button = ctk.CTkButton(
             self, text="Download", 
@@ -353,11 +331,11 @@ class DownloadFrame(ctk.CTkFrame):
     def fetch_video_details(self) -> str:
         try:
             logger.info("Fetching video title")
-            self.title = self.yt.title
+            self.title = self.video_info['title']
             logger.debug(f"Video title: {self.title}")
             self.filesize = ctk.StringVar(self, value="File size")
             logger.debug(f"Fetching thumbnail url for the video: {self.title}")
-            self.thumbnail_url = self.yt.thumbnail_url
+            self.thumbnail_url = self.video_info['thumbnail']
             logger.info("Fetching raw image data from the thumbnail url")
             with urllib.request.urlopen(self.thumbnail_url) as u:
                 raw_img_data = u.read()
@@ -381,10 +359,10 @@ class DownloadFrame(ctk.CTkFrame):
             )
             return
 
-    def update_progress(self, stream: pytube.Stream, chunk: bytes, bytes_remaining: int) -> None:
+    def update_progress(self, progress) -> None:
         logger.info("Updating download progress....")
-        total_bytes = stream.filesize
-        downloaded_bytes = total_bytes - bytes_remaining
+        total_bytes = progress.get('total_bytes')
+        downloaded_bytes = progress.get('downloaded_bytes')
         downloaded_percentage = int((downloaded_bytes / total_bytes) * 100)
         logger.debug(f"Total_Bytes: {total_bytes}; Downloaded_Bytes: {downloaded_bytes}; Downloaded_Percentage: {downloaded_percentage}")
         progressbar_value = float(downloaded_percentage / 100)
@@ -407,9 +385,9 @@ class DownloadFrame(ctk.CTkFrame):
                 logger.info("Destroying existing progress_frame")
                 self.progress_frame.destroy()
 
-            mime_type = self.video_details_frame.mime_type.get()
-            logger.debug(f"MIME_TYPE: {mime_type}")
-            filename = f'{self.yt.title}.{mime_type.split("/")[-1]}'
+            extension = self.video_details_frame.extension.get()
+            logger.debug(f"EXTENSION: {extension}")
+            filename = f'{self.title}.{extension}'
 
             download_path = tk.filedialog.askdirectory()
             if not download_path:
@@ -423,7 +401,7 @@ class DownloadFrame(ctk.CTkFrame):
             download_path = Path(download_path)
             logger.debug(f"DOWNLOAD_PATH: {download_path}")
             filename = get_validated_unique_filename(download_path, filename)
-                
+
             logger.info("Creating progressbar")
             self.progress_frame = ProgressFrame(app, fg_color="transparent")
             logger.debug(f"Configuring video title to {self.title}")
@@ -435,7 +413,16 @@ class DownloadFrame(ctk.CTkFrame):
             self.progress_frame.progressbar.set(0)
             start_time = timeit.default_timer()
             logger.debug(f"DOWNLOADING {self.title}; FILENAME: {filename}; DOWNLOAD_PATH: {download_path}")
-            self.video_details_frame.filtered_stream.download(output_path=download_path, filename=filename)
+            fmt_id = self.video_details_frame.selected_format['format_id']
+            filepath = str(download_path / filename)
+            ytdlp_options = {
+                'progress_hooks': [lambda progress: self.update_progress(progress)],
+                'outtmpl': filepath,
+                'format': fmt_id,
+            }
+            self.video_info['requested_formats'] = [self.video_details_frame.selected_format]
+            with yt_dlp.YoutubeDL(ytdlp_options) as ytdl:
+              ytdl.process_ie_result(self.video_info, download=True)
             end_time = timeit.default_timer()
             logger.info("Setting the value of progressbar to 1")
             self.progress_frame.progressbar.set(1)
@@ -446,9 +433,8 @@ class DownloadFrame(ctk.CTkFrame):
             self.progress_frame.progress_label.update()
 
             download_time = end_time - start_time
-            logger.debug(f"Time taken to only downloading: {get_formatted_time(download_time)}")
-            download_time = get_formatted_time(self.video_details_frame.filter_time + download_time)
-            logger.debug(f"Total time taken to search and download: {download_time}")
+            download_time = get_formatted_time(int(download_time))
+            logger.debug(f"Time taken to download video: {download_time}")
             ctkmb.CTkMessagebox(title=SUCCESS, message=DOWNLOAD_SUCCESS.format(download_path, download_time))
 
         except Exception as exception:

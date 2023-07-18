@@ -1,12 +1,11 @@
 import re
-from typing import Tuple, MutableSet
+from typing import List, Tuple, MutableSet, Any
 from pathlib import Path
 import tkinter as tk
-
-from pytube import YouTube
-from pytube.query import StreamQuery
+import datetime
 
 from .log_helper import LogHelper
+from .constants import *
 
 
 log_helper = LogHelper()
@@ -27,12 +26,12 @@ def validate_filename(filename: str) -> str:
     logger.debug(f"Validated filename: {validated_filename}")
     return validated_filename
 
-def get_validated_unique_filename(download_path: Path, filename: str) -> bool:
+def get_validated_unique_filename(download_path: Path, filename: str) -> str:
     filename = validate_filename(filename)
-    logger.debug(f"Checking if the filename: {filename} already exists in the path: {download_path}")
+    logger.debug(f"Checking if the filename: '{filename}' already exists in the path: {download_path}")
     filepath = download_path.joinpath(filename)
     if filepath.exists():
-        logger.debug(f"filename: {filename} already exists in the path: {download_path}")
+        logger.debug(f"filename: '{filename}' already exists in the path: {download_path}")
         base_name, extension = filepath.stem, filepath.suffix
         counter = 1
         unique_filename = filename
@@ -40,7 +39,7 @@ def get_validated_unique_filename(download_path: Path, filename: str) -> bool:
         while (download_path / unique_filename).exists():
             unique_filename = f"{base_name}({counter}){extension}"
             counter += 1
-        logger.debug(f"filename changed to {unique_filename}")
+        logger.debug(f"filename changed to '{unique_filename}'")
         return unique_filename
     return filename
 
@@ -77,64 +76,42 @@ def get_formatted_time(seconds: int) -> str:
 
     return formatted_time
 
-def get_streams(download_type: str, streams: StreamQuery) -> StreamQuery:
-    logger.debug(f"Fetching streams of download type: {download_type}")
-    download_type_streams = None
+def get_formatted_upload_date(upload_date_str: str) -> str:
+    upload_date = datetime.datetime.strptime(upload_date_str, '%Y%m%d')
+    formatted_date = upload_date.strftime('%d %B, %Y')
 
-    if download_type == "video":
-        download_type_streams = streams.filter(type="video", progressive=True)
+    return formatted_date
 
-    elif download_type == "audio":
-        download_type_streams = streams.filter(type="audio")
+def get_extensions_and_formats(download_type: str, formats: Any) -> Tuple[MutableSet[str], List[dict]]:
+    extensions = set()
+    download_type_formats = []
 
-    elif download_type ==  "video only":
-        download_type_streams = streams.filter(type="video", adaptive=True)
-    
-    logger.debug(f"Available streams for the download type {download_type}:")
-    if download_type_streams is None:
-        logger.error(f"No streams available for the download type: {download_type}")
-        return
-    for stream in download_type_streams:
-        logger.debug(stream)
+    if download_type == DOWNLOAD_TYPE_VIDEO:
+        for fmt in formats:
+            if (fmt.get('vcodec') != NONE) and (fmt.get('acodec') != NONE):
+                download_type_formats.append(fmt)
+                extensions.add(fmt.get('ext'))
 
-    return download_type_streams
+    elif download_type ==  DOWNLOAD_TYPE_AUDIO:
+        for fmt in formats:
+            if (fmt.get('vcodec') == NONE) and (fmt.get('acodec') != NONE):
+                download_type_formats.append(fmt)
+                extensions.add(fmt.get('ext'))
 
-def get_mime_types(streams: StreamQuery) -> MutableSet[str]:
-    mime_types = set()
-    for stream in streams:
-        mime_types.add(stream.mime_type)
-    for mime_type in mime_types:
-        if 'mp3' in mime_type:
-            break
-        if 'audio' in mime_type and not 'mp3' in mime_types:
-            mime_types.add('mp3')
-            break
-    if len(mime_types) == 0:
-        return
-    return mime_types
+    elif download_type == DOWNLOAD_TYPE_VIDEO_ONLY:
+        for fmt in formats:
+            if (fmt.get('vcodec') != NONE) and (fmt.get('acodec') == NONE):
+                download_type_formats.append(fmt)
+                extensions.add(fmt.get('ext'))
 
-def get_resolution(download_mime_type: str, streams: StreamQuery) -> MutableSet[str]:
-    logger.debug(f"Fetching available resolutions for the mime type: {download_mime_type}")
-    resolutions = set()
-    streams = streams.filter(mime_type=download_mime_type)
-    for stream in streams:
-        resolutions.add(stream.resolution)
-    if len(resolutions) == 0:
-        return
-    return resolutions
+    return extensions, download_type_formats
 
-def get_abr(download_mime_type: str, streams: StreamQuery) -> MutableSet[str]:
-    logger.debug(f"Fetching available audio qualities for the mime type: {download_mime_type}")
-    if download_mime_type == 'mp3':
-        download_mime_type = "audio/mp4"
-    streams = streams.filter(mime_type=download_mime_type)
-    abr = set()
-    for stream in streams:
-        abr.add(stream.abr)
-    if len(abr) == 0:
-        return
-    return abr
-
-def get_formatted_published_date(yt: YouTube) -> str:
-    published_date = yt.publish_date
-    return published_date.strftime("%d %B, %Y")
+def get_download_qualities_and_formats(extension: str, formats: Any) -> Tuple[MutableSet[str], List[dict]]:
+    download_qualities = set()
+    extension_type_formats = []
+    for fmt in formats:
+        if fmt.get('ext') == extension:
+            if format_note := fmt.get('format_note'):
+                download_qualities.add(format_note)
+                extension_type_formats.append(fmt)
+    return download_qualities, extension_type_formats

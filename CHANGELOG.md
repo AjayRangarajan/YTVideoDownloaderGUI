@@ -1,5 +1,42 @@
 # **YTVideoDownloaderGUI**
 
+#### version 0.7.1
+
+> Created a new branch **yt-dlp** & shifted from **pytube** to **yt-dlp** to download video.
+> ~~pytube~~ ➡️ **yt-dlp**
+
+##### changes:
+
+* Changed names:
+  * **mime_type** is changed as **extension** in download options
+  * **published_date** is changed as **upload_date**
+  * insted of **streams**, **formats** are used here.
+* Changed helper functions.
+  * **get_streams()** method is removed and the available formats are returned with the available options in the helper functions.
+  * instead of getting resolutions & abr separately,  **get_download_qualities_and_formats()** method is used to get download_qualities with available formats.
+  * **get_formatted_upload_date()** method is created to format the upload_date.
+* Removed error message for Invalid URL id. It will be shown in general exception message.
+* Progressbar is faster now 🔥
+* Only download time is calculated not the time taken to extract video info.
+* **fetch_video_details()** method is created to check if there is an error when fetching the video details.
+* Removed `pytube` from `requirements.txt` file
+
+##### Screenshots
+
+###### Main window:
+
+![Main window](images/screenshots/v0.7.1/main_window_v0.7.1.png)
+
+###### Download options:
+
+![Download options](images/screenshots/v0.7.1/download_options_v0.7.1.png)
+
+###### Downloading video:
+
+![Downloading video](images/screenshots/v0.7.1/downloading_video_v0.7.1.png)
+
+---
+
 #### **version 0.6.2**
 
 > ⚠️ **NOTE:** pytube version `15.0.0` is not working. Use the latest pytube version.

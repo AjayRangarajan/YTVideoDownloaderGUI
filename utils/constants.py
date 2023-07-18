@@ -1,4 +1,4 @@
-APP_VERSION = "v0.6.2"
+APP_VERSION = "v0.7.1"
 
 # app
 APP_WIDTH = 800
@@ -28,11 +28,17 @@ DOWNLOAD_SUCCESS = "Successfully downloaded the video!\ndownload path:{}\ndownlo
 ERROR = "Error!"
 INVALID_URL = "Invalid URL!\nPlease enter a valid Link!"
 EMPTY_URL_INPUT = "Please enter a Youtube video link to download"
-STREAMS_NOT_AVAILABLE = "Streams not available for the download type {}. Please try a different download type"
-MIME_TYPES_NOT_AVAILABLE = "Mime types not available for the download type {}. Please try a different download type"
-VIDEO_RESOLUTIONS_NOT_AVAILABLE = "Video resolutions not available for the mime type {}. Please try a different mime type"
-AUDIO_QUALITY_NOT_AVAILABLE = "Audio quality not available for the mime type {}. Please try a different mime type"
+EXTENSIONS_AND_FORMATS_NOT_AVAILABLE = "Extensions and Formats not available for the download type {}. Please try a different download type"
+DOWNLOAD_QUALITIES_AND_FORMATS_NOT_AVAILABLE = "Download qualities and formats not available for the extension {}. Please try a different extension"
+FORMATS_NOT_AVAILABLE_FOR_THIS_QUALITY = "Formats not available for this type of quality {}. Please try a different one"
 VIDEO_DETAILS_FETCH_SUCCESS = "SUCCESS"
+FILESIZE_NOT_AVAILABLE = "NA"
+# download types
+DOWNLOAD_TYPE_VIDEO = "video"
+DOWNLOAD_TYPE_AUDIO = "audio only"
+DOWNLOAD_TYPE_VIDEO_ONLY = "video only"
 
 # menus
-DOWNLOAD_TYPES = ["video", "audio", "video only"]
+DOWNLOAD_TYPES = [DOWNLOAD_TYPE_VIDEO, DOWNLOAD_TYPE_AUDIO, DOWNLOAD_TYPE_VIDEO_ONLY]
+
+NONE = 'none'

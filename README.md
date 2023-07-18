@@ -4,7 +4,8 @@
 
 A GUI for downloading Youtube videos using Python.
 
-> ⚠️ **NOTE:** pytube version `15.0.0` is not working. Use the latest pytube version.
+> Created a new branch **yt-dlp** & shifted from **pytube** to **yt-dlp** to download video.
+> ~~pytube~~ ➡️ **yt-dlp**
 
 ## Features:
 
@@ -22,7 +23,7 @@ Refer [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 * `CTkMessagebox==2.0`
 * `customtkinter==5.1.3`
-* `pytube==latest`
+* `yt-dlp==2023.6.22`
 * `Pillow==9.5.0`
 
 Refer [requirements.txt](requirements.txt) for complete list of dependencies.
@@ -37,23 +38,19 @@ After running the above command, the `.exe` file will be available in the `dist/
 
 ###### Main window:
 
-![Main window](images/screenshots/v0.5.4/main_window_v0.5.4.png)
+![Main window](images/screenshots/v0.7.1/main_window_v0.7.1.png)
 
 ###### Download options:
 
-![Download options](images/screenshots/v0.5.4/download_options_v0.5.4.png)
+![Download options](images/screenshots/v0.7.1/download_options_v0.7.1.png)
 
 ###### Downloading video:
 
-![Downloading video](images/screenshots/v0.5.5/downloading_video_v0.5.5.png)
+![Downloading video](images/screenshots/v0.7.1/downloading_video_v0.7.1.png)
 
 ###### Download success message:
 
 ![Download success](images/screenshots/v0.2.1/download_success_v0.2.1.png)
-
-###### File exists prompt:
-
-![File exists prompt](images/screenshots/v0.4.3/file_exists_prompt_v0.4.3.png)
 
 ###### Download cancelled message:
 
@@ -62,10 +59,6 @@ After running the above command, the `.exe` file will be available in the `dist/
 ###### Invalid URL error message:
 
 ![Invalid URL error](images/screenshots/v0.2.1/invalid_url_error_v0.2.1.png)
-
-###### Invalid video id error message:
-
-![Invalid URL error](images/screenshots/v0.2.1/invalid_video_id_error_v0.2.1.png)
 
 ###### Empty URL error message:
 
