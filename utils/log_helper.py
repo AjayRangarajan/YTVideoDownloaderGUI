@@ -11,6 +11,10 @@ class LogHelper:
     LOG_DELETE_SUCCESS = "SUCCESS"
     LOG_FOLDER = Path(__file__).resolve().parent.parent / "logs"
 
+    def __init__(self):
+        if not self.LOG_FOLDER.exists():
+            self.LOG_FOLDER.mkdir(parents=True, exist_ok=True)
+            
     @staticmethod
     def get_formatted_file_size(size_in_bytes: int) -> str:
         if size_in_bytes < 1024 * 1024:

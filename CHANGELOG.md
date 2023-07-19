@@ -1,5 +1,12 @@
 # **YTVideoDownloaderGUI**
 
+##### version 0.7.2
+
+* [X] Create the logs folder if not exists.
+* [ ] Get the log folder size limit from an environment variable.
+
+---
+
 #### version 0.7.1
 
 > Created a new branch **yt-dlp** & shifted from **pytube** to **yt-dlp** to download video.
