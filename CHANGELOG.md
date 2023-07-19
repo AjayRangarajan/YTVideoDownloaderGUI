@@ -2,8 +2,10 @@
 
 ##### version 0.7.2
 
-* [X] Create the logs folder if not exists.
-* [ ] Get the log folder size limit from an environment variable.
+* Create the logs folder if not exists.
+* Get the log folder size limit from an environment variable.
+* Use environment variables for app configurations.
+* Added *env.sample* file which contains all the environment variables.
 
 ---
 

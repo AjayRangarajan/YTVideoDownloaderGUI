@@ -1,20 +1,29 @@
-APP_VERSION = "v0.7.2"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+
+
+APP_VERSION = os.environ.get('APP_VERSION', '(latest)')
+
+MAX_LOG_SIZE = eval(os.environ.get('MAX_LOG_SIZE', "10 * 1024 * 1024"))
 
 # app
-APP_WIDTH = 800
-APP_HEIGHT = 450
+APP_WIDTH = int(os.environ.get('APP_WIDTH', 800))
+APP_HEIGHT = int(os.environ.get('APP_HEIGHT', 450))
 APP_GEOMETRY = "{}x{}+{}+{}"
-APPEARANCE_MODE = "System"
-COLOR_THEME = "blue"
+APPEARANCE_MODE = os.environ.get('APPEARANCE_MODE', "System")
+COLOR_THEME = os.environ.get('COLOR_THEME', "blue")
 
 # widgets
-URL_ENTRY_WIDTH = 400
-THUMBNAIL_IMAGE_WIDTH = 180
-THUMBNAIL_IMAGE_HEIGHT = 120
+URL_ENTRY_WIDTH = int(os.environ.get('URL_ENTRY_WIDTH', 400))
+THUMBNAIL_IMAGE_WIDTH = int(os.environ.get('THUMBNAIL_IMAGE_WIDTH', 180))
+THUMBNAIL_IMAGE_HEIGHT = int(os.environ.get('THUMBNAIL_IMAGE_HEIGHT', 120))
 
-DOWNLOAD_BUTTON_COLOR = "#f71511"
-DOWNLOAD_BUTTON_HOVER_COLOR = "#c4322f"
-DOWNLOAD_BUTTON_FONT_COLOR = "white"
+DOWNLOAD_BUTTON_COLOR = os.environ.get('DOWNLOAD_BUTTON_COLOR', "#f71511")
+DOWNLOAD_BUTTON_HOVER_COLOR = os.environ.get('DOWNLOAD_BUTTON_HOVER_COLOR', "#c4322f")
+DOWNLOAD_BUTTON_FONT_COLOR = os.environ.get('DOWNLOAD_BUTTON_FONT_COLOR', "white")
 
 # icons
 ICON_CANCEL = "cancel"
@@ -33,6 +42,7 @@ DOWNLOAD_QUALITIES_AND_FORMATS_NOT_AVAILABLE = "Download qualities and formats n
 FORMATS_NOT_AVAILABLE_FOR_THIS_QUALITY = "Formats not available for this type of quality {}. Please try a different one"
 VIDEO_DETAILS_FETCH_SUCCESS = "SUCCESS"
 FILESIZE_NOT_AVAILABLE = "NA"
+
 # download types
 DOWNLOAD_TYPE_VIDEO = "video"
 DOWNLOAD_TYPE_AUDIO = "audio only"

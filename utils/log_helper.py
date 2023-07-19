@@ -4,10 +4,11 @@ from datetime import datetime
 from pathlib import Path
 import shutil
 
+from utils.constants import MAX_LOG_SIZE
+
 
 class LogHelper:
 
-    MAX_LOG_SIZE = 10 * 1024 * 1024
     LOG_DELETE_SUCCESS = "SUCCESS"
     LOG_FOLDER = Path(__file__).resolve().parent.parent / "logs"
 
@@ -50,7 +51,7 @@ class LogHelper:
         
         log_folder_size = self.get_log_folder_size()
         deleted_success = self.LOG_DELETE_SUCCESS
-        if log_folder_size > self.MAX_LOG_SIZE:
+        if log_folder_size > MAX_LOG_SIZE:
             deleted_success = self.delete_logs()
 
         current_date = datetime.now()

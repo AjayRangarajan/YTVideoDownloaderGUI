@@ -25,8 +25,15 @@ Refer [CHANGELOG.md](CHANGELOG.md) for release notes.
 * `customtkinter==5.1.3`
 * `yt-dlp==2023.6.22`
 * `Pillow==9.5.0`
+* `python-dotenv==1.0.0`
 
 Refer [requirements.txt](requirements.txt) for complete list of dependencies.
+
+### Environment variables:
+
+* All environment variables are mentioned in the *env.sample* file.
+* Environment variables can also be stored in a *.env* file.
+* If environment variables are not available, no errors will be shown instead default values will be taken.
 
 ### Packaging:
 
