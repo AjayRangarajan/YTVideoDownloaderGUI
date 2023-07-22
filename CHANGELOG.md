@@ -1,5 +1,14 @@
 # **YTVideoDownloaderGUI**
 
+#### version 0.7.3
+
+##### changes:
+
+* [X] Add icon for Mac & bypass errors caused when setting icon.
+* [ ] Add support for Mac.
+
+---
+
 ##### version 0.7.2
 
 * Create the logs folder if not exists.

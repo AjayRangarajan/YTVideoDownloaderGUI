@@ -28,12 +28,20 @@ class App(ctk.CTk):
         self.resizable(False, False)
         
         logger.info("Setting icon for the app")
-        if platform.startswith("win"):
-            self.icon_path = ROOT_FOLDER.joinpath("images/icons/ico/icon1.ico")
-            self.wm_iconbitmap(bitmap=self.icon_path)
-        else:
-            self.icon_path = ROOT_FOLDER.joinpath("images/icons/xbm/icon1.xbm")
-            self.wm_iconbitmap(bitmap=self.icon_path)
+        try:
+            if platform.startswith("win"):
+                self.icon_path = ROOT_FOLDER.joinpath("images/icons/ico/icon1.ico")
+                self.wm_iconbitmap(bitmap=self.icon_path)
+            elif platform.lower() == "darwin":
+                self.icon_path = ROOT_FOLDER.joinpath("images/icons/icns/icon1.icns")
+                self.wm_iconbitmap(bitmap=self.icon_path)
+            elif platform.lower() == "linux":
+                self.icon_path = ROOT_FOLDER.joinpath("images/icons/xbm/icon1.xbm")
+                self.wm_iconbitmap(bitmap=self.icon_path)
+            else:
+                logger.error("Unable to set icon! Unidentified type of operating system.")
+        except Exception as exception:
+            logger.exception(exception)
 
         logger.info("Creating App widgets")
         self.create_widgets()
