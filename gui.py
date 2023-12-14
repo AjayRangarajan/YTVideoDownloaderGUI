@@ -97,16 +97,16 @@ class App(ctk.CTk):
         self.download_frame = DownloadFrame(self, video_info=self.video_info)
 
 
-class ProgressFrame(ctk.CTkFrame):
+class DeterminateProgressFrame(ctk.CTkFrame):
 
     def __init__(self, parent: tk.Tk, *args, **kwargs) -> None:
         super().__init__(parent, *args, **kwargs)
 
         self.app = parent
 
-        logger.info("Creating progress_frame widgets")
+        logger.info("Creating determinate progress_frame widgets")
         self.create_widgets()
-        logger.info("Placing progress_frame widgets")
+        logger.info("Placing determinate progress_frame widgets")
         self.place_widgets()
 
         self.pack(side="bottom", expand=False, fill='x', padx=5, pady=5)
@@ -120,7 +120,32 @@ class ProgressFrame(ctk.CTkFrame):
     def place_widgets(self) -> None:
         self.video_title_label.pack(side="top", expand=False, padx=5, pady=5)
         self.progress_label.pack(side="top", expand=False, padx=5, pady=(5, 0))
-        self.progressbar.pack(side="top", expand=False, padx=5, pady=(2, 5))        
+        self.progressbar.pack(side="top", expand=False, padx=5, pady=(2, 5))  
+
+class InDeterminateProgressFrame(ctk.CTkFrame):
+
+    def __init__(self, parent: tk.Tk, *args, **kwargs) -> None:
+        super().__init__(parent, *args, **kwargs)
+
+        self.app = parent
+
+        logger.info("Creating indeterminate progress_frame widgets")
+        self.create_widgets()
+        logger.info("Placing indeterminate progress_frame widgets")
+        self.place_widgets()
+
+        self.pack(side="bottom", expand=False, fill='x', padx=5, pady=5)
+
+    def create_widgets(self) -> None:
+        self.video_title_label = ctk.CTkLabel(self, text=None)
+        self.progress_label = ctk.CTkLabel(self, text="Downloading")
+        self.progressbar = ctk.CTkProgressBar(self, orientation="horizontal", mode=PROGRESS_INDETERMINATE, indeterminate_speed=10)
+        self.progressbar.set(0)
+
+    def place_widgets(self) -> None:
+        self.video_title_label.pack(side="top", expand=False, padx=5, pady=5)
+        self.progress_label.pack(side="top", expand=False, padx=5, pady=(5, 0))
+        self.progressbar.pack(side="top", expand=False, padx=5, pady=(2, 5))       
 
 
 class VideoDetailsFrame(ctk.CTkFrame):
@@ -301,6 +326,7 @@ class DownloadFrame(ctk.CTkFrame):
 
         self.app = parent
         self.video_info = video_info
+        self.downloaded_size = None
 
         if self.fetch_video_details() == VIDEO_DETAILS_FETCH_SUCCESS:
     
@@ -367,8 +393,21 @@ class DownloadFrame(ctk.CTkFrame):
             )
             return
 
+    def update_indeterminate_progress(self, progress) -> None:
+        logger.info("Updating indeterminate download progress....")
+        downloaded_bytes = progress.get('downloaded_bytes')
+        logger.debug(f"Downloaded_Bytes: {downloaded_bytes}")
+        self.downloaded_size = get_formatted_size(downloaded_bytes)
+        self.progress_frame.progress_label.configure(text=f"Downloading ({self.downloaded_size})")
+
+        self.progress_frame.progressbar.step()
+        self.progress_frame.progressbar.update()
+
+        logger.info("Indeterminate Progressbar updated!!!!")
+
+    
     def update_progress(self, progress) -> None:
-        logger.info("Updating download progress....")
+        logger.info("Updating determinate download progress....")
         total_bytes = progress.get('total_bytes')
         downloaded_bytes = progress.get('downloaded_bytes')
         downloaded_percentage = int((downloaded_bytes / total_bytes) * 100)
@@ -383,7 +422,7 @@ class DownloadFrame(ctk.CTkFrame):
         )
         logger.debug(f"Total_Size: {total_size}; Downloaded_Size: {downloaded_size}; Downloaded_Percentage: {downloaded_percentage}")
         self.progress_frame.progress_label.update()
-        logger.info("Progressbar updated!!!!")
+        logger.info("Determinate Progressbar updated!!!!")
             
     def download(self) -> None:
         try:
@@ -409,37 +448,57 @@ class DownloadFrame(ctk.CTkFrame):
             download_path = Path(download_path)
             logger.debug(f"DOWNLOAD_PATH: {download_path}")
             filename = get_validated_unique_filename(download_path, filename)
+            fmt_id = self.video_details_frame.selected_format['format_id']
+            filepath = str(download_path / filename)
 
             logger.info("Creating progressbar")
-            self.progress_frame = ProgressFrame(app, fg_color="transparent")
-            logger.debug(f"Configuring video title to {self.title}")
+            if self.filesize.get() == FILESIZE_NOT_AVAILABLE:
+                logger.info("filesize not available. creating indeterminate progress frame.")
+                self.progress_mode = PROGRESS_INDETERMINATE
+                self.progress_frame = InDeterminateProgressFrame(app, fg_color="transparent")
+                ytdlp_options = {
+                    'progress_hooks': [self.update_indeterminate_progress],
+                    'outtmpl': filepath,
+                    'format': fmt_id,
+                } 
+            else:
+                logger.info("filesize is available. creating determinate progress frame.")
+                self.progress_mode = PROGRESS_DETERMINATE
+                self.progress_frame = DeterminateProgressFrame(app, fg_color="transparent")
+                ytdlp_options = {
+                    'progress_hooks': [self.update_progress],
+                    'outtmpl': filepath,
+                    'format': fmt_id,
+                }
+
+            logger.debug(f"Configuring video title: {self.title}")
             self.progress_frame.video_title_label.configure(text=self.title)
             self.progress_frame.video_title_label.update()
 
             # download the filtered stream
-            logger.info("Setting the value of progressbar to 0")
-            self.progress_frame.progressbar.set(0)
             start_time = timeit.default_timer()
             logger.debug(f"DOWNLOADING {self.title}; FILENAME: {filename}; DOWNLOAD_PATH: {download_path}")
-            fmt_id = self.video_details_frame.selected_format['format_id']
-            filepath = str(download_path / filename)
-            ytdlp_options = {
-                'progress_hooks': [lambda progress: self.update_progress(progress)],
-                'outtmpl': filepath,
-                'format': fmt_id,
-            }
             self.video_info['requested_formats'] = [self.video_details_frame.selected_format]
             with yt_dlp.YoutubeDL(ytdlp_options) as ytdl:
               ytdl.process_ie_result(self.video_info, download=True)
             end_time = timeit.default_timer()
-            logger.info("Setting the value of progressbar to 1")
-            self.progress_frame.progressbar.set(1)
 
-            # update progress label to 100%
-            logger.debug(f"Updating the progress_label to 100% with filesize: {self.filesize.get()}")
-            self.progress_frame.progress_label.configure(text=f"100 % ({self.filesize.get()})")
-            self.progress_frame.progress_label.update()
+            if self.progress_mode == PROGRESS_INDETERMINATE:
+                pass
+                logger.debug(f"Updating the progress_label to 'Downloaded' with downloaded filesize: {self.downloaded_size}")
+                self.progress_frame.progress_label.configure(text=f"Video Downloaded ({self.downloaded_size})")
+                self.progress_frame.progressbar.destroy()
+                self.progress_frame.progress_label.update()
 
+            else:
+                # update progress label to 100%
+                logger.info("Setting the value of progressbar to 1")
+                self.progress_frame.progressbar.set(1)
+                self.progress_frame.progressbar.update()
+                logger.debug(f"Updating the progress_label to 100% with filesize: {self.filesize.get()}")
+                self.progress_frame.progress_label.configure(text=f"100 % ({self.filesize.get()})")
+                self.progress_frame.progress_label.update()
+            
             download_time = end_time - start_time
             download_time = get_formatted_time(int(download_time))
             logger.debug(f"Time taken to download video: {download_time}")

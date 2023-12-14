@@ -1,11 +1,31 @@
 # **YTVideoDownloaderGUI**
 
+#### version 0.8.1
+
+##### features:
+
+* [X] Add progressbar for downloads with unknown filesize. (indeterminate progressbar)
+
+##### changes:
+
+* [X] Updated all the libraries and packages.
+
+##### Screenshots
+
+###### Indeterminate Progressbar:
+
+![Indeterminate Progressbar](images/screenshots/v0.8.1/indeterminate_progressbar_v0.8.1.png)
+
+![Video Downloaded](images/screenshots/v0.8.1/video_downloaded_v0.8.1.png)
+
+---
+
 #### version 0.7.3
 
 ##### changes:
 
 * [X] Add icon for Mac & bypass errors caused when setting icon.
-* [ ] Add support for Mac.
+* [ ] Add support for Mac. (Not added)
 
 ---
 

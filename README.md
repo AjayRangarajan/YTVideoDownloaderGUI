@@ -4,9 +4,6 @@
 
 A GUI for downloading Youtube videos using Python.
 
-> Created a new branch **yt-dlp** & shifted from **pytube** to **yt-dlp** to download video.
-> ~~pytube~~ ➡️ **yt-dlp**
-
 ## Features:
 
 * Downloads YouTube video in any available format with high quality.
@@ -21,11 +18,11 @@ Refer [CHANGELOG.md](CHANGELOG.md) for release notes.
 
 ### Dependencies:
 
-* `CTkMessagebox==2.0`
-* `customtkinter==5.1.3`
-* `yt-dlp==2023.6.22`
-* `Pillow==9.5.0`
-* `python-dotenv==1.0.0`
+* `CTkMessagebox`
+* `customtkinter`
+* `yt-dlp`
+* `Pillow`
+* `python-dotenv`
 
 Refer [requirements.txt](requirements.txt) for complete list of dependencies.
 
