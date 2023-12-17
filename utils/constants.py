@@ -13,6 +13,10 @@ MAX_LOG_SIZE = eval(os.environ.get('MAX_LOG_SIZE', "10 * 1024 * 1024"))
 APP_WIDTH = int(os.environ.get('APP_WIDTH', 800))
 APP_HEIGHT = int(os.environ.get('APP_HEIGHT', 450))
 APP_GEOMETRY = "{}x{}+{}+{}"
+MIN_WIDTH = int(os.environ.get('MIN_WIDTH', 550))
+MIN_HEIGHT = int(os.environ.get('MIN_HEIGHT', 1000))
+MAX_WIDTH = int(os.environ.get('MAX_WIDTH', 550))
+MAX_HEIGHT = int(os.environ.get('MAX_HEIGHT', 500))
 APPEARANCE_MODE = os.environ.get('APPEARANCE_MODE', "System")
 COLOR_THEME = os.environ.get('COLOR_THEME', "blue")
 

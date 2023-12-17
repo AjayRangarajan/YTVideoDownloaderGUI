@@ -17,6 +17,10 @@ from utils.helpers import *
 from utils.log_helper import LogHelper
 
 
+class AppEntryWidget(ctk.CTkEntry):
+    def __init__(self, *args, **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
 class App(ctk.CTk):
 
     def __init__(self, title: str, width: int, height: int, *args, **kwargs) -> None:
@@ -25,7 +29,8 @@ class App(ctk.CTk):
         self.title(title)
         x, y = calculate_center(self, width, height)
         self.geometry(APP_GEOMETRY.format(width, height, x, y))
-        self.resizable(False, False)
+        self.minsize(MIN_WIDTH, MIN_HEIGHT)
+        self.maxsize(MAX_WIDTH, MAX_HEIGHT)
         
         logger.info("Setting icon for the app")
         try:
@@ -48,16 +53,32 @@ class App(ctk.CTk):
 
         logger.info("Placing App widgets")
         self.place_widgets()
+    
+    @classmethod
+    def create_search_entry_widget(cls, parent: tk.Tk, *args, **kwargs):
+        return cls.SearchEntryWidget(parent, *args, **kwargs)
 
     def create_widgets(self) -> None:
         self.url_entry_label = ctk.CTkLabel(self, text="Enter the Youtube video link below:")
-        self.url_entry = ctk.CTkEntry(self, width=URL_ENTRY_WIDTH)
-        self.search_button = ctk.CTkButton(self, text="Search", command=self.search_url)
+        self.url_entry = self.create_search_entry_widget(self, width=URL_ENTRY_WIDTH)
+        self.search_button = ctk.CTkButton(self, text="Search", state=tk.DISABLED, command=self.search_url)
     
     def place_widgets(self) -> None:
         self.url_entry_label.pack(side="top", expand=False, padx=5, pady=5)
         self.url_entry.pack(side="top", expand=False, padx=5, pady=5)
         self.search_button.pack(side="top", expand=False, padx=5, pady=5)
+
+    class SearchEntryWidget(AppEntryWidget):
+
+        def __init__(self, parent: tk.Tk, *args, **kwargs) -> None:
+            super().__init__(parent, *args, **kwargs)
+            self.app = parent
+            self.bind('<Return>', lambda event: self.app.search_url())
+            self.bind('<KeyRelease>', self.key_release)
+
+        def key_release(self, event):
+            self.app.search_button.configure(state=tk.NORMAL)
+            self.app.search_button.update()
 
     def search_url(self) -> None:
 
@@ -78,7 +99,7 @@ class App(ctk.CTk):
             ctkmb.CTkMessagebox(title=ERROR, message=EMPTY_URL_INPUT, icon=ICON_CANCEL)
             return
         if not is_valid_youtube_url(self.url):
-            logger.error(f"The give url {self.url} is invalid")
+            logger.error(f"The given url {self.url} is invalid")
             ctkmb.CTkMessagebox(title=ERROR, message=INVALID_URL, icon=ICON_CANCEL)
             return
         
@@ -184,12 +205,14 @@ class VideoDetailsFrame(ctk.CTkFrame):
             self, 
             variable=self.extension, 
             values=None,
+            state=tk.DISABLED,
             command=lambda extension: self.update_download_qualities_menu(extension)
             )
         self.download_qualities_menu = ctk.CTkOptionMenu(
             self, 
             variable=self.download_quality, 
             values=None,
+            state=tk.DISABLED,
             command=lambda download_quality: self.filter_download_quality_type_formats(download_quality)
             )
         
@@ -236,6 +259,8 @@ class VideoDetailsFrame(ctk.CTkFrame):
         logger.debug(f"Download type, {download_type} selected! Updating extensions menu!!")
         self.extension.set("Extension")
         self.download_quality.set("Quality")
+        self.download_qualities_menu.configure(state=tk.DISABLED)
+        self.download_qualities_menu.update()
         self.download_frame.download_button.configure(state=tk.DISABLED)
         self.download_frame.download_button.update()
 
@@ -255,7 +280,7 @@ class VideoDetailsFrame(ctk.CTkFrame):
         for fmt in self.download_type_formats:
             logger.debug(fmt)
 
-        self.extensions_menu.configure(values=extensions)
+        self.extensions_menu.configure(values=extensions, state=tk.NORMAL)
         self.extensions_menu.update()
         logger.debug(f'Updated extensions: {extensions}')
 
@@ -275,7 +300,7 @@ class VideoDetailsFrame(ctk.CTkFrame):
                 icon=ICON_CANCEL
             )
             return
-        self.download_qualities_menu.configure(values=download_qualities)
+        self.download_qualities_menu.configure(values=download_qualities, state=tk.NORMAL)
         self.download_qualities_menu.update()
         logger.debug(f"Updated download qualities: {download_qualities}")
 
@@ -428,6 +453,19 @@ class DownloadFrame(ctk.CTkFrame):
         try:
             logger.debug(f"downloading {self.title}")
 
+            # Disable all inputs
+            logger.info("Disabling all inputs")
+            self.video_details_frame.download_types_menu.configure(state=tk.DISABLED)
+            self.video_details_frame.download_types_menu.update()
+            self.video_details_frame.download_qualities_menu.configure(state=tk.DISABLED)
+            self.video_details_frame.download_qualities_menu.update()
+            self.video_details_frame.extensions_menu.configure(state=tk.DISABLED)
+            self.video_details_frame.extensions_menu.update()
+            self.download_button.configure(state=tk.DISABLED)
+            self.download_button.update()
+            self.app.search_button.configure(state=tk.DISABLED)
+            self.app.search_button.update()
+
             if hasattr(self, "progress_frame"):
                 logger.info("Destroying existing progress_frame")
                 self.progress_frame.destroy()
@@ -498,7 +536,7 @@ class DownloadFrame(ctk.CTkFrame):
                 logger.debug(f"Updating the progress_label to 100% with filesize: {self.filesize.get()}")
                 self.progress_frame.progress_label.configure(text=f"100 % ({self.filesize.get()})")
                 self.progress_frame.progress_label.update()
-            
+
             download_time = end_time - start_time
             download_time = get_formatted_time(int(download_time))
             logger.debug(f"Time taken to download video: {download_time}")
@@ -509,6 +547,19 @@ class DownloadFrame(ctk.CTkFrame):
             ctkmb.CTkMessagebox(title=ERROR, message=exception, icon=ICON_CANCEL)
             return
 
+        finally:
+            # Enable all inputs
+            logger.info("Enabling all inputs")
+            self.video_details_frame.download_types_menu.configure(state=tk.NORMAL)
+            self.video_details_frame.download_types_menu.update()
+            self.video_details_frame.download_qualities_menu.configure(state=tk.NORMAL)
+            self.video_details_frame.download_qualities_menu.update()
+            self.video_details_frame.extensions_menu.configure(state=tk.NORMAL)
+            self.video_details_frame.extensions_menu.update()
+            self.download_button.configure(state=tk.NORMAL)
+            self.download_button.update()
+            self.app.search_button.configure(state=tk.NORMAL)
+            self.app.search_button.update()
 
 
 if __name__ == "__main__":
@@ -518,8 +569,6 @@ if __name__ == "__main__":
 
     log_helper = LogHelper()
     logger = log_helper.get_logger(__name__)
-
-    logger.info("===========PROGRAM START===========")
 
     ROOT_FOLDER = Path(__file__).resolve().parent
     logger.debug(f"ROOT_FOLDER: {ROOT_FOLDER}")

@@ -1,5 +1,21 @@
 # **YTVideoDownloaderGUI**
 
+#### version 0.8.2
+
+##### features:
+
+* [X] Add min size, max size and made the main widow resizable.
+
+##### changes:
+
+* [ ] Add key bindings to Entry widget for url entry.
+  * [ ] Add undo, redo features
+  * [X] Trigger Search button when `Enter` key is pressed.
+* [X] Fix Download Options menu.
+* [X] Disable all inputs when video is downloading
+
+---
+
 #### version 0.8.1
 
 ##### features:
