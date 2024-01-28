@@ -1,8 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
-
+load_dotenv(override=True)
 
 
 APP_VERSION = os.environ.get('APP_VERSION', '(latest)')
@@ -59,4 +58,9 @@ DOWNLOAD_TYPES = [DOWNLOAD_TYPE_VIDEO, DOWNLOAD_TYPE_AUDIO, DOWNLOAD_TYPE_VIDEO_
 PROGRESS_DETERMINATE = "determinate"
 PROGRESS_INDETERMINATE = "indeterminate"
 
+# include captions
+INCLUDE_CAPTIONS_ON = "on"
+INCLUDE_CAPTIONS_OFF = "off"
+
 NONE = 'none'
+NOT_AVAILABLE = "NA"

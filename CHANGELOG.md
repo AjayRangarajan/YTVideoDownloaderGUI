@@ -1,5 +1,24 @@
 # **YTVideoDownloaderGUI**
 
+#### version 0.9.1
+
+##### features:
+
+* [X] Add checkbox to download captions.
+
+##### changes:
+
+* [X] Fix progressbar for None values.
+* [X] Override environment variables
+
+##### Screenshots
+
+###### Include Captions option:
+
+![Include Captions option](images/screenshots/v0.9.1/include_captions_option_v0.9.1.png)
+
+---
+
 #### version 0.8.2
 
 ##### features:

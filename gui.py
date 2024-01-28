@@ -176,6 +176,7 @@ class VideoDetailsFrame(ctk.CTkFrame):
         
         self.download_frame = parent
         self.video_info = video_info
+        self.include_caption = ctk.StringVar(value=INCLUDE_CAPTIONS_ON)
 
         if self.fetch_video_details() == VIDEO_DETAILS_FETCH_SUCCESS:
             self.download_type = ctk.StringVar(self, value="Download Type")
@@ -192,6 +193,12 @@ class VideoDetailsFrame(ctk.CTkFrame):
 
     def create_widgets(self) -> None:
         self.title_label = ctk.CTkLabel(self, text=self.title, anchor='w')
+        self.include_caption_checkbox = ctk.CTkCheckBox(
+            self, 
+            text="Include captions", 
+            variable= self.include_caption, 
+            onvalue=INCLUDE_CAPTIONS_ON, 
+            offvalue=INCLUDE_CAPTIONS_OFF)
         self.channel_label = ctk.CTkLabel(self, text=self.channel_name, anchor='w')
         self.duration_label = ctk.CTkLabel(self, text=self.duration)
         self.upload_date_label = ctk.CTkLabel(self, text=self.upload_date)
@@ -217,10 +224,11 @@ class VideoDetailsFrame(ctk.CTkFrame):
             )
         
     def place_widgets(self) -> None:
-        self.title_label.grid(row=0, column=0, columnspan=3, sticky='nsew', padx=(10, 5))
+        self.title_label.grid(row=0, column=0, columnspan=4, sticky='nsew', padx=(10, 5))
         self.channel_label.grid(row=1, column=0, sticky='nsew', padx=(10, 5))
         self.duration_label.grid(row=1, column=1, sticky='nsew', padx=5, pady=5)
         self.upload_date_label.grid(row=1, column=2, sticky='nsew', padx=5, pady=5)
+        self.include_caption_checkbox.grid(row=1, column=3, sticky='nsew', padx=5, pady=5)
         self.download_types_menu.grid(row=2, column=0, padx=5, pady=5)
         self.extensions_menu.grid(row=2, column=1, padx=5, pady=5)
         self.download_qualities_menu.grid(row=2, column=2, padx=5, pady=5)
@@ -420,11 +428,13 @@ class DownloadFrame(ctk.CTkFrame):
 
     def update_indeterminate_progress(self, progress) -> None:
         logger.info("Updating indeterminate download progress....")
-        downloaded_bytes = progress.get('downloaded_bytes')
+        downloaded_bytes = progress.get('downloaded_bytes', None)
         logger.debug(f"Downloaded_Bytes: {downloaded_bytes}")
-        self.downloaded_size = get_formatted_size(downloaded_bytes)
-        self.progress_frame.progress_label.configure(text=f"Downloading ({self.downloaded_size})")
-
+        if downloaded_bytes == None:
+            self.downloaded_size = get_formatted_size(downloaded_bytes)
+            self.progress_frame.progress_label.configure(text=f"Downloading ({self.downloaded_size})")
+        else:
+            self.progress_frame.progress_label.configure(text=f"Downloading...")
         self.progress_frame.progressbar.step()
         self.progress_frame.progressbar.update()
 
@@ -433,15 +443,30 @@ class DownloadFrame(ctk.CTkFrame):
     
     def update_progress(self, progress) -> None:
         logger.info("Updating determinate download progress....")
-        total_bytes = progress.get('total_bytes')
-        downloaded_bytes = progress.get('downloaded_bytes')
-        downloaded_percentage = int((downloaded_bytes / total_bytes) * 100)
+        total_bytes = progress.get('total_bytes', None)
+        logger.debug(f"TOTAL_BYTES: {total_bytes}")
+        downloaded_bytes = progress.get('downloaded_bytes', None)
+        logger.debug(f"DOWNLOADED_BYTES: {downloaded_bytes}")
+        downloaded_percentage = 50
+        if downloaded_bytes != None and total_bytes != None:
+            downloaded_percentage = int((downloaded_bytes / total_bytes) * 100)
+            downloaded_size = get_formatted_size(downloaded_bytes)
+            total_size = get_formatted_size(total_bytes)
+        elif downloaded_bytes == None and total_bytes != None:
+            downloaded_size = NOT_AVAILABLE
+            total_size = get_formatted_size(total_bytes)
+        elif downloaded_bytes != None and total_bytes == None:
+            total_size = NOT_AVAILABLE
+            downloaded_size = get_formatted_size(downloaded_bytes)
+        else:
+            total_size = get_formatted_size(total_bytes)
+            downloaded_size = get_formatted_size(downloaded_bytes)
+        logger.debug(f"DOWNLOADED_PERCENTAGE: {downloaded_percentage}")
         logger.debug(f"Total_Bytes: {total_bytes}; Downloaded_Bytes: {downloaded_bytes}; Downloaded_Percentage: {downloaded_percentage}")
         progressbar_value = float(downloaded_percentage / 100)
         logger.debug(f"progressbar value: {progressbar_value}")
         self.progress_frame.progressbar.set(progressbar_value)
-        downloaded_size = get_formatted_size(downloaded_bytes)
-        total_size = get_formatted_size(total_bytes)
+        
         self.progress_frame.progress_label.configure(
             text=f"{downloaded_percentage} % ({downloaded_size}/{total_size})"
         )
@@ -455,6 +480,8 @@ class DownloadFrame(ctk.CTkFrame):
 
             # Disable all inputs
             logger.info("Disabling all inputs")
+            self.video_details_frame.include_caption_checkbox.configure(state=tk.DISABLED)
+            self.video_details_frame.include_caption_checkbox.update()
             self.video_details_frame.download_types_menu.configure(state=tk.DISABLED)
             self.video_details_frame.download_types_menu.update()
             self.video_details_frame.download_qualities_menu.configure(state=tk.DISABLED)
@@ -509,6 +536,11 @@ class DownloadFrame(ctk.CTkFrame):
                     'format': fmt_id,
                 }
 
+            if self.video_details_frame.include_caption.get() == INCLUDE_CAPTIONS_ON:
+                logger.info("Including subtitle options")
+                ytdlp_options['writesubtitles'] = True
+                ytdlp_options['writeautomaticsub'] = True
+
             logger.debug(f"Configuring video title: {self.title}")
             self.progress_frame.video_title_label.configure(text=self.title)
             self.progress_frame.video_title_label.update()
@@ -550,6 +582,8 @@ class DownloadFrame(ctk.CTkFrame):
         finally:
             # Enable all inputs
             logger.info("Enabling all inputs")
+            self.video_details_frame.include_caption_checkbox.configure(state=tk.NORMAL)
+            self.video_details_frame.include_caption_checkbox.update()
             self.video_details_frame.download_types_menu.configure(state=tk.NORMAL)
             self.video_details_frame.download_types_menu.update()
             self.video_details_frame.download_qualities_menu.configure(state=tk.NORMAL)

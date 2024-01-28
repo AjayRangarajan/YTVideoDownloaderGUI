@@ -11,6 +11,7 @@ A GUI for downloading Youtube videos using Python.
 * Shows progress of the download.
 * Choose download type (video, audio, video only) with respective file types and quality (resolution/average bitrate)
 * Added logging feature.
+* Added option to include captions
 
 ### Release notes:
 
@@ -46,11 +47,11 @@ After running the above command, the `.exe` file will be available in the `dist/
 
 ###### Download options:
 
-![Download options](images/screenshots/v0.7.1/download_options_v0.7.1.png)
+![Download options](images/screenshots/v0.9.1/download_options_v0.9.1.png)
 
 ###### Downloading video:
 
-![Downloading video](images/screenshots/v0.7.1/downloading_video_v0.7.1.png)
+![Downloading video](images/screenshots/v0.9.1/downloading_video_v0.9.1.png)
 
 ###### Download success message:
 
