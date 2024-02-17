@@ -38,6 +38,7 @@ DOWNLOAD_CANCELLED = "Download Cancelled!"
 SUCCESS = "Success!"
 DOWNLOAD_SUCCESS = "Successfully downloaded the video!\ndownload path:{}\ndownload time: {}"
 ERROR = "Error!"
+PLAYLIST_URL_ENTERED = "The given URL is a playlist URL.\nPlease enter a valid video URL"
 INVALID_URL = "Invalid URL!\nPlease enter a valid Link!"
 EMPTY_URL_INPUT = "Please enter a Youtube video link to download"
 EXTENSIONS_AND_FORMATS_NOT_AVAILABLE = "Extensions and Formats not available for the download type {}. Please try a different download type"
@@ -47,12 +48,12 @@ VIDEO_DETAILS_FETCH_SUCCESS = "SUCCESS"
 FILESIZE_NOT_AVAILABLE = "NA"
 
 # download types
-DOWNLOAD_TYPE_VIDEO = "video"
+DOWNLOAD_TYPE_VIDEO_WITH_AUDIO = "video with audio"
 DOWNLOAD_TYPE_AUDIO = "audio only"
 DOWNLOAD_TYPE_VIDEO_ONLY = "video only"
 
 # menus
-DOWNLOAD_TYPES = [DOWNLOAD_TYPE_VIDEO, DOWNLOAD_TYPE_AUDIO, DOWNLOAD_TYPE_VIDEO_ONLY]
+DOWNLOAD_TYPES = [DOWNLOAD_TYPE_VIDEO_WITH_AUDIO, DOWNLOAD_TYPE_AUDIO, DOWNLOAD_TYPE_VIDEO_ONLY]
 
 # progress
 PROGRESS_DETERMINATE = "determinate"

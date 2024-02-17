@@ -86,7 +86,7 @@ def get_extensions_and_formats(download_type: str, formats: Any) -> Tuple[Mutabl
     extensions = set()
     download_type_formats = []
 
-    if download_type == DOWNLOAD_TYPE_VIDEO:
+    if download_type == DOWNLOAD_TYPE_VIDEO_WITH_AUDIO:
         for fmt in formats:
             if (fmt.get('vcodec') != NONE) and (fmt.get('acodec') != NONE):
                 download_type_formats.append(fmt)

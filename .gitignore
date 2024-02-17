@@ -14,8 +14,22 @@ references.txt
 notes.txt
 
 # media files
-.mp4
-.mp3
+*.mp4
+*.mp3
+*.webm
+*.flv
+*.ogg
+*.avi
+*.mkv
+*.mpeg
+*.mov
+*.wmv
+*.3gp
+*.aac
+*.wav
+
+# tools
+tools/
 
 # editor
 .vscode

@@ -110,8 +110,12 @@ class App(ctk.CTk):
             logger.debug(f"Successfully extracted video info of the URL: {self.url}")
 
         except Exception as exception:
-            logger.exception(exception)
-            ctkmb.CTkMessagebox(title=ERROR, message=exception, icon=ICON_CANCEL)
+            logger.debug(f"Playlist URL entered. URL: {self.url}")
+            ctkmb.CTkMessagebox(title=ERROR, message=PLAYLIST_URL_ENTERED, icon=ICON_CANCEL)
+            return
+        
+        if self.video_info.get('_type') == 'playlist' or self.video_info.get('entries'):
+            ctkmb.CTkMessagebox(title=ERROR, message=PLAYLIST_URL_ENTERED, icon=ICON_CANCEL)
             return
 
         logger.info("Creating download frame")
@@ -397,6 +401,7 @@ class DownloadFrame(ctk.CTkFrame):
 
     def fetch_video_details(self) -> str:
         try:
+            logger.info("Fetching video details")
             logger.info("Fetching video title")
             self.title = self.video_info['title']
             logger.debug(f"Video title: {self.title}")

@@ -1,5 +1,11 @@
 # **YTVideoDownloaderGUI**
 
+#### version 0.9.2
+
+##### changes:
+
+* [X] Add exception if playlist URL uploaded.
+
 #### version 0.9.1
 
 ##### features:
